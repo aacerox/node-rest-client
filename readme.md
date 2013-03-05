@@ -1,4 +1,4 @@
-# Node REST Client for Node.js
+# REST Client for Node.js
 
 Allows connecting to any API REST and get results as js Object. The client has the following features:
 
