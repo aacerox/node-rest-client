@@ -22,7 +22,7 @@ $ npm install node-rest-client
 Client has 2 ways to call a REST service: direct or using registered methods
 
 ```javascript
-var Client = require('api-client').Client;
+var Client = require('node-rest-client').Client;
 
 client = new Client();
 
@@ -52,7 +52,7 @@ client.methods.jsonMethod(function(data,response){
 You can pass diferents args to registered methods, simplifying reuse: path replace parameters, query parameters, custom headers 
 
 ```javascript
-var Client = require('api-client').Client;
+var Client = require('node-rest-client').Client;
 
 // direct way
 client = new Client();
@@ -95,7 +95,7 @@ client.methods.jsonMethod(args,function(data,response){
 You can even use path placeholders in query string in direct connection:
 
 ```javascript
-var Client = require('api-client').Client;
+var Client = require('node-rest-client').Client;
 
 // direct way
 client = new Client();
@@ -123,7 +123,7 @@ client.get("http://remote.site/rest/json/${id}/method?arg1=${arg1}&arg2=${arg2}"
 To send data to remote site using POST or PUT methods, just add a data attribute to args object:
 
 ```javascript
-var Client = require('api-client').Client;
+var Client = require('node-rest-client').Client;
 
 // direct way
 client = new Client();
@@ -176,7 +176,7 @@ client.methods.xmlMethod(args_js,function(data,response){
 Just pass proxy configuration as option to client
 
 ```javascript
-var Client = require('api-client').Client;
+var Client = require('node-rest-client').Client;
 
 // configure proxy
 var options_proxy={
@@ -197,7 +197,7 @@ client = new Client(options_proxy);
 Just pass username and password as option to client. Every request done with the client will pass username and password as basic authorization header.
 
 ```javascript
-var Client = require('api-client').Client;
+var Client = require('node-rest-client').Client;
 
 // configure basic http auth for every request
 var options_auth={user:"admin",password:"123"};
