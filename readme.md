@@ -228,7 +228,7 @@ var options ={
 
 ###  Error Handling
 
-Client can emits error events that can be handle like usually node does.
+Client can emits error events that can be handled like usually node does.
 
 ```javascript
 
