@@ -225,3 +225,17 @@ var options ={
 };
 
 ```
+
+###  Error Handling
+
+Client can emits error events that can be handle like usually node does.
+
+```javascript
+
+client = new Client(options_auth);
+
+client.on('error',function(err){
+	console.error('Something went wrong', err);
+});
+
+```
