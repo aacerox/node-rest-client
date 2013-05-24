@@ -217,9 +217,21 @@ var options ={
 	proxy:{
 			host:"proxy.foo.com", // proxy host
 			port:8080, // proxy port
-			user:"hellen", // proxy username if required
+			user:"ellen", // proxy username if required
 			password:"ripley" // proxy pass if required
 		},
+	// aditional connection options passed to node http.request y https.request methods 
+	// (ie: options to connect to IIS with SSL)	
+	connection:{	
+		secureOptions: constants.SSL_OP_NO_TLSv1_2,
+		ciphers:'ECDHE-RSA-AES256-SHA:AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
+		honorCipherOrder: true
+	},
+	// customize mime types for json or xml connections
+	mimetypes:{
+		json:["application/json","application/json;charset=utf-8"],
+		xml:["application/xml","application/xml;charset=utf-8"]
+	},	
 	user:"admin", // basic http auth username if required
 	password:"123" // basic http auth password if required
 };
