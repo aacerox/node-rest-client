@@ -8,7 +8,8 @@ Allows connecting to any API REST and get results as js Object. The client has t
 - Direct or through proxy connection to remote API sites.
 - Register remote API operations as client own methods, simplifying reuse.
 - Automatic parsing of XML and JSON response documents as js objects.
-- dynamic path and query parameters and request headers.
+- Dynamic path and query parameters and request headers.
+- Improved Error handling mechanism (client or specific request)
 
 
 ## Installation
@@ -238,16 +239,63 @@ var options ={
 
 ```
 
+### Managing Requests
+
+Each REST method invocation returns a request object with specific request options and error handler.
+
+```javascript
+var Client = require('node-rest-client').Client;
+
+client = new Client();
+
+// direct way
+var req1 = client.get("http://remote.site/rest/xml/method", function(data, response){
+			// parsed response body as js object
+			console.log(data);
+			// raw response
+			console.log(response);
+		});
+
+// view req1 options		
+console.log(req1.options);
+
+// registering remote methods
+client.registerMethod("jsonMethod", "http://remote.site/rest/json/method", "GET");
+
+var req2=client.methods.jsonMethod(function(data,response){
+	// parsed response body as js object
+	console.log(data);
+	// raw response
+	console.log(response);
+});
+
+// handling specific req2 errors
+req2.on('error',function(err){
+	console.log('something went wrong on req2!!', err.request.options);
+});
+
+
 ###  Error Handling
 
-Client can emits error events that can be handled like usually node does.
+ Now you can handle error events in two places: on client or on each request.
 
 ```javascript
 
 client = new Client(options_auth);
 
+// handling request error events
+client.get("http://remote.site/rest/xml/method", function(data, response){
+			// parsed response body as js object
+			console.log(data);
+			// raw response
+			console.log(response);
+		}).on('error',function(err){
+			console.log('something went wrong on the request', err.request.options);
+		});
+
+// handling client error events
 client.on('error',function(err){
-	console.error('Something went wrong', err);
+	console.error('Something went wrong on the client', err);
 });
 
 ```
