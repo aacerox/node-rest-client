@@ -273,7 +273,7 @@ var req2=client.methods.jsonMethod(function(data,response){
 req2.on('error',function(err){
 	console.log('something went wrong on req2!!', err.request.options);
 });
-
+```
 
 ###  Error Handling
 
