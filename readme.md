@@ -4,7 +4,7 @@ Allows connecting to any API REST and get results as js Object. The client has t
 
 - Transparent HTTP/HTTPS connection to remote API sites.
 - Allows simple HTTP basic authentication.
-- Allows most common HTTP operations: GET, POST, PUT, DELETE.
+- Allows most common HTTP operations: GET, POST, PUT, DELETE, PATCH.
 - Direct or through proxy connection to remote API sites.
 - Register remote API operations as client own methods, simplifying reuse.
 - Automatic parsing of XML and JSON response documents as js objects.
