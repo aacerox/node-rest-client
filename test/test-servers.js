@@ -42,6 +42,10 @@ var RouteManager ={
 					
 			},
 			"/json/empty":function(req,res){
+				res.writeHead(204, {'Content-Type': 'application/json'});
+				res.end();
+			},
+			"/xml/empty":function(req,res){
 				res.writeHead(204, {'Content-Type': 'application/xml'});
 				res.end();
 			}
