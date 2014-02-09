@@ -40,6 +40,10 @@ var RouteManager ={
 					res.end();
 				});
 					
+			},
+			"/json/empty":function(req,res){
+				res.writeHead(204, {'Content-Type': 'application/xml'});
+				res.end();
 			}
 	}
 };
