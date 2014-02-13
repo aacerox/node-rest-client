@@ -47,6 +47,43 @@ client.methods.jsonMethod(function(data,response){
 
 ```
 
+### HTTP POST 
+
+POST, PUT or PATCH method invocation are configured like GET calls with the difference that you have to set "Content-Type" header in args passed to client method invocation:
+
+```javascript
+
+//Example POST method invocation
+var Client = require('node-rest-client').Client;
+
+var client = new Client();
+
+// set content-type header and data as json in args parameter
+var args = {
+  data: { test: "hello" },
+  headers:{"Content-Type": "application/json"} 
+};
+
+client.post("http://remote.site/rest/xml/method", args, function(data,response) {
+  	// parsed response body as js object
+	console.log(data);
+	// raw response
+	console.log(response);
+});
+
+// registering remote methods
+client.registerMethod("postMethod", "http://remote.site/rest/json/method", "POST");
+
+client.methods.postMethod(args, function(data,response){
+	// parsed response body as js object
+	console.log(data);
+	// raw response
+	console.log(response);
+});
+
+```
+If no "Content-Type" header is set as client arg POST,PUT and PATCH methods will not work properly.
+
 
 ### Passing args to registered methods
 
@@ -59,9 +96,10 @@ var Client = require('node-rest-client').Client;
 client = new Client();
 
 args ={
-		path:{"id":120},
-		parameters:{arg1:"hello",arg2:"world"},
-		headers:{"test-header":"client-api"}
+		data:{test:"hello"}, // data passed to REST method (only useful in POST, PUT or PATCH methods)
+		path:{"id":120}, // path substitution var
+		parameters:{arg1:"hello",arg2:"world"}, // query parameter substitution vars
+		headers:{"test-header":"client-api"} // request headers
 	  };
 
 
