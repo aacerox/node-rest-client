@@ -212,7 +212,8 @@ client.methods.xmlMethod(args_js,function(data,response){
 
 ### Connect through proxy
 
-Just pass proxy configuration as option to client
+Just pass proxy configuration as option to client.
+
 
 ```javascript
 var Client = require('node-rest-client').Client;
@@ -223,13 +224,37 @@ var options_proxy={
 			host:"proxy.foo.com",
 			port:8080,
 			user:"proxyuser",
-			password:"123"
+			password:"123",
+			tunnel:true
 		}
 	},
 
 client = new Client(options_proxy);
 
 ```
+
+client has 2 ways to connect to target site through a proxy server: tunnel or direct request, the first one is the default option
+so if you want to use direct request you must set tunnel off.
+
+```javascript
+var Client = require('node-rest-client').Client;
+
+// configure proxy
+var options_proxy={
+		proxy:{
+			host:"proxy.foo.com",
+			port:8080,
+			user:"proxyuser",
+			password:"123",
+			tunnel:false // use direct request to proxy
+		}
+	},
+
+client = new Client(options_proxy);
+
+```
+
+
 
 ### Basic HTTP auth
 
