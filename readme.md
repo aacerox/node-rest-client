@@ -1,5 +1,7 @@
 # REST Client for Node.js
 
+**NOTE:** _by mistake version 0.7.10-s of NODE-REST-CLIENT has a bug. If you have downloaded this version previously, please download current version to fix it_ 
+
 Allows connecting to any API REST and get results as js Object. The client has the following features:
 
 - Transparent HTTP/HTTPS connection to remote API sites.
