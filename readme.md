@@ -12,6 +12,7 @@ Allows connecting to any API REST and get results as js Object. The client has t
 - Automatic parsing of XML and JSON response documents as js objects.
 - Dynamic path and query parameters and request headers.
 - Improved Error handling mechanism (client or specific request)
+- Added support for compressed responses: gzip and deflate
 
 
 ## Installation
