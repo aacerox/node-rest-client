@@ -5,3 +5,7 @@ test/spec/test.js
 
 node_modules
 *.log
+
+test/multiple-clients-test.js
+
+test/manual-test.js
