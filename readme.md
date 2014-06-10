@@ -1,6 +1,6 @@
 # REST Client for Node.js
 
-**NOTE:** _by mistake version 0.7.10-s of NODE-REST-CLIENT has a bug. If you have downloaded this version previously, please download current version to fix it_ 
+**NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf.Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. therefore if you are using a version below 0.8.0 of node please use a versión below 1.0 of "node-rest-client". _ 
 
 Allows connecting to any API REST and get results as js Object. The client has the following features:
 
