@@ -365,3 +365,27 @@ client.on('error',function(err){
 });
 
 ```
+
+###  Setting a timeout
+
+You can set a timeout by specifying a timeout in the args
+
+```javascript
+var Client = require('node-rest-client').Client;
+
+// direct way
+client = new Client();
+
+args ={
+		timeout:1000
+	  };
+
+client.get("http://remote.site/rest/json", args,
+		function(data, response){
+			// parsed response body as js object
+			console.log(data);
+			// raw response
+			console.log(response);
+});
+
+```
