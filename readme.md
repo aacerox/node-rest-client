@@ -212,6 +212,89 @@ client.methods.xmlMethod(args_js,function(data,response){
 
 ```
 
+### Request/Response configuration
+
+It's also possible to configure each request and response, passing its configuration as an
+additional argument in method call.
+
+```javascript
+
+var client = new Client();
+
+// request and response additional configuration
+args ={
+		path:{"id":120},
+		parameters:{arg1:"hello",arg2:"world"},
+		headers:{"test-header":"client-api"},
+		data:"<xml><arg1>hello</arg1><arg2>world</arg2></xml>",
+		requestConfig:{
+			timeout:1000, //request timeout in milliseconds
+			noDelay:true, //Enable/disable the Nagle algorithm
+			keepAlive:true, //Enable/disable keep-alive functionalityidle socket.
+			keepAliveDelay:1000 //and optionally set the initial delay before the first keepalive probe is sent
+		},
+		responseConfig:{
+			timeout:1000 //response timeout
+		}
+	  };
+
+
+client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", args, function(data, response){
+			// parsed response body as js object
+			console.log(data);
+			// raw response
+			console.log(response);
+});
+
+```
+If you want to handle timeout events both in the request and int the response just add a new "requestTimeout"
+or "responseTimeout" event handler to clientRequest returned by method call.
+
+```javascript
+var client = new Client();
+
+// request and response additional configuration
+args ={
+		path:{"id":120},
+		parameters:{arg1:"hello",arg2:"world"},
+		headers:{"test-header":"client-api"},
+		data:"<xml><arg1>hello</arg1><arg2>world</arg2></xml>",
+		requestConfig:{
+			timeout:1000, //request timeout in milliseconds
+			noDelay:true, //Enable/disable the Nagle algorithm
+			keepAlive:true, //Enable/disable keep-alive functionalityidle socket.
+			keepAliveDelay:1000 //and optionally set the initial delay before the first keepalive probe is sent
+		},
+		responseConfig:{
+			timeout:1000 //response timeout
+		}
+	  };
+
+
+var req = client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", args, function(data, response){
+			// parsed response body as js object
+			console.log(data);
+			// raw response
+			console.log(response);
+});
+
+req.on('requestTimeout',function(req){
+	console.log("request has expired");
+	req.abort();
+});
+
+req.on('responseTimeout',function(res){
+	console.log("response has expired");
+	
+});
+
+//it's usefull to handle request errors to avoid, for example, socket hang up errors on request timeouts
+req.on('error'function(err){
+	console.log('request error',err);
+});
+
+```
+
 
 ### Connect through proxy
 
@@ -300,10 +383,21 @@ var options ={
 		xml:["application/xml","application/xml;charset=utf-8"]
 	},	
 	user:"admin", // basic http auth username if required
-	password:"123" // basic http auth password if required
+	password:"123", // basic http auth password if required
+	requestConfig:{
+		timeout:1000, //request timeout in milliseconds
+		noDelay:true, //Enable/disable the Nagle algorithm
+		keepAlive:true, //Enable/disable keep-alive functionalityidle socket.
+		keepAliveDelay:1000 //and optionally set the initial delay before the first keepalive probe is sent
+	},
+	responseConfig:{
+		timeout:1000 //response timeout
+	}
 };
 
 ```
+Note that requestConfig and responseConfig options if set on client instantiation apply to all it's requests/responses
+
 
 ### Managing Requests
 

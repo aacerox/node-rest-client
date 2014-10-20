@@ -15,6 +15,7 @@ var RouteManager ={
 	},
 	"routes":{
 			"/json":function(req,res){
+				//this.sleep(5000);
 				var message = fs.readFileSync('./message.json','utf8');
 				res.writeHead(200, {'Content-Type': 'application/json'});
 				res.write(message.toString());
@@ -49,7 +50,15 @@ var RouteManager ={
 				res.writeHead(204, {'Content-Type': 'application/xml'});
 				res.end();
 			}
+	},
+	"sleep":function(ms){
+		
+    var stop = new Date().getTime();
+    	while(new Date().getTime() < stop + ms) {
+      ;
+    	}
 	}
+
 };
 
 
