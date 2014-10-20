@@ -247,7 +247,7 @@ client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", ar
 });
 
 ```
-If you want to handle timeout events both in the request and int the response just add a new "requestTimeout"
+If you want to handle timeout events both in the request and in the response just add a new "requestTimeout"
 or "responseTimeout" event handler to clientRequest returned by method call.
 
 ```javascript
@@ -396,20 +396,26 @@ var options ={
 };
 
 ```
-Note that requestConfig and responseConfig options if set on client instantiation apply to all it's requests/responses
+Note that requestConfig and responseConfig options if set on client instantiation apply to all of its requests/responses
+and is only overriden by request or reponse configs passed as args in method calls.
 
 
 ### Managing Requests
 
-Each REST method invocation returns a request object with specific request options and error handler.
+Each REST method invocation returns a request object with specific request options and error, requestTimeout and responseTimeout event handlers.
 
 ```javascript
 var Client = require('node-rest-client').Client;
 
 client = new Client();
 
+var args={
+			requesConfig:{timeout:1000},
+			responseConfig:{timeout:2000}
+		};
+
 // direct way
-var req1 = client.get("http://remote.site/rest/xml/method", function(data, response){
+var req1 = client.get("http://remote.site/rest/xml/method",args, function(data, response){
 			// parsed response body as js object
 			console.log(data);
 			// raw response
@@ -418,6 +424,18 @@ var req1 = client.get("http://remote.site/rest/xml/method", function(data, respo
 
 // view req1 options		
 console.log(req1.options);
+
+
+req1.on('requestTimeout',function(req){
+	console.log("request has expired");
+	req.abort();
+});
+
+req1.on('responseTimeout',function(res){
+	console.log("response has expired");
+	
+});
+
 
 // registering remote methods
 client.registerMethod("jsonMethod", "http://remote.site/rest/json/method", "GET");
