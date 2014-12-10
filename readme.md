@@ -344,7 +344,7 @@ client = new Client(options_proxy);
 
 ### Basic HTTP auth
 
-Just pass username and password as option to client. Every request done with the client will pass username and password as basic authorization header.
+Just pass username and password or just username, if no password is required by remote site, as option to client. Every request done with the client will pass username and password or just username if no password is required as basic authorization header.
 
 ```javascript
 var Client = require('node-rest-client').Client;
