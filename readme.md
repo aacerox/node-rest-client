@@ -381,7 +381,10 @@ var options ={
 	mimetypes:{
 		json:["application/json","application/json;charset=utf-8"],
 		xml:["application/xml","application/xml;charset=utf-8"]
-	},	
+	},
+  customHeaders: { // add some custom headers to all request send by this client
+    customHeader1: 'Some Value for Header1'
+  },
 	user:"admin", // basic http auth username if required
 	password:"123", // basic http auth password if required
 	requestConfig:{
