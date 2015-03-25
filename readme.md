@@ -279,17 +279,17 @@ var req = client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=
 });
 
 req.on('requestTimeout',function(req){
-	console.log("request has expired");
+	console.log('request has expired');
 	req.abort();
 });
 
 req.on('responseTimeout',function(res){
-	console.log("response has expired");
+	console.log('response has expired');
 	
 });
 
 //it's usefull to handle request errors to avoid, for example, socket hang up errors on request timeouts
-req.on('error'function(err){
+req.on('error', function(err){
 	console.log('request error',err);
 });
 
