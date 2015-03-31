@@ -2,7 +2,7 @@
   "author": "Alejandro Alvarez Acero",
   "name": "node-rest-client",
   "description": "node API REST client",
-  "version": "1.4.4",
+  "version": "1.4.8",
   "repository": {
     "type":"git",
     "url": "https://github.com/aacerox/node-rest-client.git"
