@@ -9,7 +9,8 @@
   },
   "main": "./lib/node-rest-client", 
   "dependencies": {
-    "xml2js":">=0.2.4"
+    "xml2js":">=0.2.4",
+    "debug": "~2.1.1"
     },
   "devDependencies": {
     "jasmine-node":">=1.2.3"
