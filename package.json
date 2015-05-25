@@ -7,7 +7,7 @@
     "type":"git",
     "url": "https://github.com/aacerox/node-rest-client.git"
   },
-  "main": "./lib/node-rest-client", 
+  "main": "./lib/node-rest-client",
   "dependencies": {
     "xml2js":">=0.2.4",
     "debug": "~2.1.1"
@@ -18,5 +18,6 @@
   "optionalDependencies": {},
   "engines": {
     "node": "*"
-  }
+  },
+  "license": "MIT"
 }
