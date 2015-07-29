@@ -49,6 +49,12 @@ var RouteManager ={
 			"/xml/empty":function(req,res){
 				res.writeHead(204, {'Content-Type': 'application/xml'});
 				res.end();
+			},
+			"/json/contenttypewithspace":function(req,res){
+				var message = fs.readFileSync('./message.json','utf8');
+				res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+				res.write(message.toString());
+				res.end();
 			}
 	},
 	"sleep":function(ms){
