@@ -1,4 +1,8 @@
 # REST Client for Node.js
+[![npm version](https://badge.fury.io/js/node-rest-client.svg)](https://www.npmjs.com/package/node-rest-client)
+[![Build Status](https://travis-ci.org/olalonde/node-rest-client.svg?branch=master)](https://travis-ci.org/olalonde/node-rest-client)
+
+[![NPM](https://nodei.co/npm/node-rest-client.png?downloads=true)](https://nodei.co/npm/node-rest-client.png?downloads=true)
 
 **NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf.Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. therefore if you are using a version below 0.8.0 of node please use a versión below 1.0.0 of "node-rest-client". _ 
 
@@ -7,12 +11,14 @@ Allows connecting to any API REST and get results as js Object. The client has t
 - Transparent HTTP/HTTPS connection to remote API sites.
 - Allows simple HTTP basic authentication.
 - Allows most common HTTP operations: GET, POST, PUT, DELETE, PATCH.
+- Allows creation of custom HTTP Methods (PURGE, etc.)
 - Direct or through proxy connection to remote API sites.
 - Register remote API operations as client own methods, simplifying reuse.
 - Automatic parsing of XML and JSON response documents as js objects.
 - Dynamic path and query parameters and request headers.
 - Improved Error handling mechanism (client or specific request)
 - Added support for compressed responses: gzip and deflate
+- Added support for follow redirects thanks to great [follow-redirects](https://www.npmjs.com/package/follow-redirects) package
 
 
 ## Installation
@@ -152,8 +158,6 @@ client.get("http://remote.site/rest/json/${id}/method?arg1=${arg1}&arg2=${arg2}"
 	});
 ```
 
-
-
 ###  HTTP POST and PUT methods
 
 To send data to remote site using POST or PUT methods, just add a data attribute to args object:
@@ -284,7 +288,23 @@ req.on('error', function (err) {
 	console.log('request error', err);
 });
 ```
+### Follows Redirect
+Node REST client follows redirects by default to a maximum of 21 redirects, but it's also possible to change follows redirect default config in each request done by the client
+```javascript
+var client = new Client();
 
+// request and response additional configuration
+var args = {
+	requestConfig: {
+		followRedirects:true,//whether redirects should be followed(default,true) 
+		maxRedirects:10//set max redirects allowed (default:21)
+	},
+	responseConfig: {
+		timeout: 1000 //response timeout
+	}
+};
+
+```
 
 ### Connect through proxy
 
