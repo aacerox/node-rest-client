@@ -11,14 +11,14 @@ fs.watchFile('./iplist', function(c,p) { update_iplist(); });
 function update_blacklist() {
   sys.log("Updating blacklist.");
   blacklist = fs.readFileSync('./blacklist').split('\n')
-              .filter(function(rx) { return rx.length })
-              .map(function(rx) { return RegExp(rx) });
+  .filter(function(rx) { return rx.length })
+  .map(function(rx) { return RegExp(rx) });
 }
 
 function update_iplist() {
   sys.log("Updating iplist.");
   iplist = fs.readFileSync('./iplist').split('\n')
-           .filter(function(rx) { return rx.length });
+  .filter(function(rx) { return rx.length });
 }
 
 function ip_allowed(ip) {

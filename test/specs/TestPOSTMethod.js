@@ -16,11 +16,11 @@ describe('POST Method', function () {
         data:{dataNumber:123, dataString:"test"}
 
       };
-      client.post(server.baseURL + "/json/path/${testNumber}/${testString}",args, function(data, response){
-
+      client.post(server.baseURL + "/json/path/post/${testNumber}/${testString}",args, function(data, response){
         data.should.not.equal(null);
         data.should.type("object");
-        data.url.should.equal("/json/path/123/test");
+        data.url.should.equal("/json/path/post/123/test");
+        data.postData.should.equal('{"dataNumber":123,"dataString":"test"}');
         done();
       });
     });
@@ -29,13 +29,15 @@ describe('POST Method', function () {
     it("POST request with parameters", function(done){
       var client = new Client();
       var args ={
-        parameters:{testNumber:123, testString:"test"}
+        parameters:{testNumber:123, testString:"test"},
+        data:{dataNumber:123, dataString:"test"}
       };
-      client.post(server.baseURL + "/json/path/query",args, function(data, response){
+      client.post(server.baseURL + "/json/path/post/query",args, function(data, response){
 
         data.should.not.equal(null);
         data.should.type("object");
-        data.url.should.equal("/json/path/query?testNumber=123&testString=test");
+        data.url.should.equal("/json/path/post/query?testNumber=123&testString=test");
+        data.postData.should.equal('{"dataNumber":123,"dataString":"test"}');
         done();
       });
     });
@@ -58,15 +60,17 @@ describe('POST Method', function () {
     it("POST request with registered method and path variable substitution", function(done){
       var client = new Client();
       var args ={
-        path:{testNumber:123, testString:"test"}
+        path:{testNumber:123, testString:"test"},
+        data:{dataNumber:123, dataString:"test"}
       };
 
-      client.registerMethod("testMethod",server.baseURL + "/json/path/${testNumber}/${testString}","POST");
+      client.registerMethod("testMethod",server.baseURL + "/json/path/post/${testNumber}/${testString}","POST");
 
       client.methods.testMethod(args, function(data, response){
         data.should.not.equal(null);
         data.should.type("object");
-        data.url.should.equal("/json/path/123/test");
+        data.url.should.equal("/json/path/post/123/test");
+        data.postData.should.equal('{"dataNumber":123,"dataString":"test"}');
         done();
       });
     });
@@ -75,24 +79,26 @@ describe('POST Method', function () {
     it("POST request with registered method and parameters", function(done){
       var client = new Client();
       var args ={
-        parameters:{testNumber:123, testString:"test"}
+        parameters:{testNumber:123, testString:"test"},
+        data:{dataNumber:123, dataString:"test"}
       };
 
-      client.registerMethod("testMethod",server.baseURL + "/json/path/query","POST");
+      client.registerMethod("testMethod",server.baseURL + "/json/path/post/query","POST");
 
       client.methods.testMethod(args, function(data, response){
         data.should.not.equal(null);
         data.should.type("object");
-        data.url.should.equal("/json/path/query?testNumber=123&testString=test");
-        
+        data.url.should.equal("/json/path/post/query?testNumber=123&testString=test");
+        data.postData.should.equal('{"dataNumber":123,"dataString":"test"}');
         done();
       });
     });
 
-   it("POST request with incompatible parameters URL", function(done){
+    it("POST request with incompatible parameters URL", function(done){
       var client = new Client();
       var args ={
-        parameters:{testNumber:123, testString:"test"}
+        parameters:{testNumber:123, testString:"test"},
+        data:{dataNumber:123, dataString:"test"}
       };
 
       client.on('error', function(err){
@@ -100,7 +106,7 @@ describe('POST Method', function () {
         done();
       });
 
-      client.post(server.baseURL + "/json/path/query?testNumber=123&testString=test", args, function(data, response){
+      client.post(server.baseURL + "/json/path/post/query?testNumber=123&testString=test", args, function(data, response){
         //noop
       }).should.throw();
 
@@ -117,7 +123,7 @@ describe('POST Method', function () {
 
       
 
-      client.post(server.baseURL + "/json/path/query",args, function(data, response){
+      client.post(server.baseURL + "/json/path/post/query",args, function(data, response){
         //noop
       }).should.throw();
 
@@ -137,7 +143,7 @@ describe('POST Method', function () {
 
       
 
-      client.post(server.baseURL + "/json/path/query",args, function(data, response){
+      client.post(server.baseURL + "/json/path/post/query",args, function(data, response){
         //noop
       }).should.throw();
 
@@ -146,7 +152,8 @@ describe('POST Method', function () {
     it("POST request with registered method and incompatible parameters URL", function(done){
       var client = new Client();
       var args ={
-        parameters:{testNumber:123, testString:"test"}
+        parameters:{testNumber:123, testString:"test"},
+        data:{dataNumber:123, dataString:"test"}
       };
 
       client.on('error', function(err){
@@ -154,7 +161,7 @@ describe('POST Method', function () {
         done();
       });
 
-      client.registerMethod("testMethod",server.baseURL + "/json/path/query?testNumber=123&testString=test","POST");
+      client.registerMethod("testMethod",server.baseURL + "/json/path/post/query?testNumber=123&testString=test","POST");
 
       client.methods.testMethod(args, function(data, response){
         //noop
@@ -171,7 +178,7 @@ describe('POST Method', function () {
         done();
       });
 
-      client.registerMethod("testMethod",server.baseURL + "/json/path/query","POST");
+      client.registerMethod("testMethod",server.baseURL + "/json/path/post/query","POST");
 
       client.methods.testMethod(args, function(data, response){
         //noop
@@ -191,18 +198,41 @@ describe('POST Method', function () {
         done();
       });
 
-      client.registerMethod("testMethod",server.baseURL + "/json/path/query","POST");
+      client.registerMethod("testMethod",server.baseURL + "/json/path/post/query","POST");
 
       client.methods.testMethod(args, function(data, response){
         //noop
       }).should.throw();
 
     });
-
-
-
   });
 
+describe("#XML",function(){
+
+    it("POST request with parameters", function(done){
+      var client = new Client();
+      var args ={
+        data:"<?xml version='1.0'?><testData><testNumber>123</testNumber><testString>123</testString></testData>"
+      };
+      client.post(server.baseURL + "/xml/path/post/query",args, function(data, response){        
+        console.log("data es", data);
+        data.should.type("object");
+        data.testData.should.be.ok;
+        data.testData.testNumber.should.be.ok;
+        data.testData.testString.should.be.ok;
+        data.testData.testNumber.should.be.a.Number;
+        data.testData.testString.should.be.a.String;
+        data.testData.testNumber.should.be.equal(123);
+        data.testData.testString.should.be.equal("123");
+
+
+        data.testData.
+        
+        done();
+      });
+    });
+
+});
 
 after(function () {
   server.close();

@@ -8,6 +8,7 @@ describe('GET Method', function () {
   });
 
   describe("#JSON",function(){
+
     it("GET request with no args", function(done){
       var client = new Client();
       client.get(server.baseURL + "/json", function(data, response){
@@ -95,7 +96,7 @@ describe('GET Method', function () {
       });
     });
 
-   it("GET request with incompatible parameters URL", function(done){
+    it("GET request with incompatible parameters URL", function(done){
       var client = new Client();
       var args ={
         parameters:{testNumber:123, testString:"test"}
@@ -204,11 +205,22 @@ describe('GET Method', function () {
       }).should.throw();
 
     });
-
-
-
   });
 
+
+describe("#XML",function(){
+
+  it("GET request with no args", function(done){
+    var client = new Client();
+    client.get(server.baseURL + "/xml", function(data, response){
+      console.log("data es ", data);
+      data.should.not.equal(null);
+      data.should.type("object");
+      done();
+    });
+  });
+
+});
 
 after(function () {
   server.close();
