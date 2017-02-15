@@ -104,12 +104,12 @@ var client = new Client();
 var args = {
 	data: { test: "hello" }, // data passed to REST method (only useful in POST, PUT or PATCH methods)
 	path: { "id": 120 }, // path substitution var
-	parameters: { arg1: "hello", arg2: "world" }, // query parameter substitution vars
+	parameters: { arg1: "hello", arg2: "world" }, // this is serialized as URL parameters
 	headers: { "test-header": "client-api" } // request headers
 };
 
 
-client.get("http://remote.site/rest/json/${id}/method?arg1=hello&arg2=world", args,
+client.get("http://remote.site/rest/json/${id}/method", args,
 	function (data, response) {
 		// parsed response body as js object
 		console.log(data);
@@ -144,8 +144,7 @@ var Client = require('node-rest-client').Client;
 var client = new Client();
 
 var args = {
-	path: { "id": 120, "arg1": "hello", "arg2": "world" },
-	parameters: { arg1: "hello", arg2: "world" },
+	path: { "id": 120, "arg1": "hello", "arg2": "world" },	
 	headers: { "test-header": "client-api" }
 };
 
@@ -175,7 +174,7 @@ var args = {
 	data: "<xml><arg1>hello</arg1><arg2>world</arg2></xml>"
 };
 
-client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", args, function (data, response) {
+client.post("http://remote.site/rest/xml/${id}/method", args, function (data, response) {
 	// parsed response body as js object
 	console.log(data);
 	// raw response
@@ -235,7 +234,7 @@ var args = {
 };
 
 
-client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", args, function (data, response) {
+client.post("http://remote.site/rest/xml/${id}/method", args, function (data, response) {
 	// parsed response body as js object
 	console.log(data);
 	// raw response
@@ -266,7 +265,7 @@ var args = {
 };
 
 
-var req = client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", args, function (data, response) {
+var req = client.post("http://remote.site/rest/xml/${id}/method", args, function (data, response) {
 	// parsed response body as js object
 	console.log(data);
 	// raw response
