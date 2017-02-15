@@ -14,11 +14,15 @@
     "follow-redirects":">=1.2.0"
     },
   "devDependencies": {
-    "jasmine-node":">=1.2.3"
+    "mocha": "*",
+    "should": ">= 0.0.1"
     },
   "optionalDependencies": {},
   "engines": {
     "node": "*"
+  },
+  "scripts": {
+    "test": "mocha"
   },
   "license": "MIT"
 }

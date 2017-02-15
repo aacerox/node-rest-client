@@ -1,28 +1,42 @@
 var http = require('http'),
 	fs = require('fs');
 
-// Create an HTTP server
-var httpSrv = http.createServer(function (req, res) {
-	console.log("req.url", req.url);
-	RouteManager.findRoute(req,res);
-});
+var RouterOptions={ 
+		"baseMessageDir": "",
+		"JSONMessageFile": './test/server/message.json',
+		"XMLMessageFile":  './test/server/message.xml'
+
+}
 
 var RouteManager ={
 	"findRoute":function(req,res){
-		var handler = this.routes[req.url];
+		var handler = null
+		for(route in this.routes){
+			if (req.url.startsWith(route)){
+				handler = this.routes[route];
+			}
+
+		}		 
 		if (!handler) throw "cannot find route " + req.url;
 		handler.call(this,req,res);
 	},
 	"routes":{
 			"/json":function(req,res){
 				//this.sleep(5000);
-				var message = fs.readFileSync('./message.json','utf8');
+				var message = fs.readFileSync(RouterOptions.JSONMessageFile,'utf8');
 				res.writeHead(200, {'Content-Type': 'application/json'});
 				res.write(message.toString());
 				res.end();
 			},
+			"/json/path":function(req,res){
+				//this.sleep(5000);
+				var message = {"url": req.url};
+				res.writeHead(200, {'Content-Type': 'application/json'});
+				res.write(JSON.stringify(message));
+				res.end();
+			},
 			"/xml":function(req,res){
-				var message = fs.readFileSync('./message.xml','utf8');
+				var message = fs.readFileSync(RouterOptions.XMLMessageFile,'utf8');
 				res.writeHead(200, {'Content-Type': 'application/xml'});
 				res.write(message.toString());
 				res.end();
@@ -34,7 +48,7 @@ var RouteManager ={
 			},
 			"/json?post":function(req,res){
 				req.on('data',function(data){
-					console.log("[SERVER] data = ", data);
+					//console.log("[SERVER] data = ", data);
 					res.writeHead(200, {'Content-Type': 'application/json'});
 					//res.writeHead(200, {'Content-Type': 'text/plain'});
 					res.write(data.toString());
@@ -43,7 +57,7 @@ var RouteManager ={
 					
 			},
 			"/json/empty":function(req,res){
-				res.writeHead(204, {'Content-Type': 'application/json'});
+				res.writeHead(200, {'Content-Type': 'application/json'});
 				res.end();
 			},
 			"/xml/empty":function(req,res){
@@ -70,12 +84,25 @@ var RouteManager ={
 
 
 
-
-
-httpSrv.on('error',function(err){
-	console.error('error starting http test server',err);
+// Create an HTTP server
+this.server = http.createServer(function (req, res) {
+	//console.log("[SERVER] req.url", req.url);
+	RouteManager.findRoute(req,res);
 });
 
-httpSrv.listen(4444);
+exports.baseURL ="http://localhost:4444";
 
-console.log('http server Listening on port ' + 4444);
+exports.listen = function () {
+  this.server.listen.apply(this.server, arguments);
+};
+
+exports.close = function (callback) {
+  this.server.close(callback);
+};
+
+
+
+exports.on = function(event, cb){
+	this.server.on.apply(this.server,event,cb);
+};
+
