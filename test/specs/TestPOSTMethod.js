@@ -9,7 +9,7 @@ describe('POST Method', function () {
 
   describe("#JSON",function(){
 
-    it("POST request with path variable substitution", function(done){
+    it.only("POST request with path variable substitution", function(done){
       var client = new Client();
       var args ={
         path:{testNumber:123, testString:"test"},
