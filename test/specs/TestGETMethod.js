@@ -2,6 +2,9 @@ var server =require("../server/mock-server"),
 Client=require("../../lib/node-rest-client").Client;
 
 describe('GET Method', function () {
+	
+  this.timeout(150000);
+	
   before(function () {
     server.listen(4444);
     console.log("server started on port 4444");

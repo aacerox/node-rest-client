@@ -9,3 +9,5 @@ node_modules
 test/multiple-clients-test.js
 
 test/manual-test.js
+.project
+mocha-eclipse.js
