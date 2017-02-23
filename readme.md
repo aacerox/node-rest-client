@@ -4,7 +4,6 @@
 
 [![NPM](https://nodei.co/npm/node-rest-client.png?downloads=true)](https://nodei.co/npm/node-rest-client.png?downloads=true)
 
-**NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf.Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. therefore if you are using a version below 0.8.0 of node please use a versión below 1.0.0 of "node-rest-client". _ 
 
 Allows connecting to any API REST and get results as js Object. The client has the following features:
 
@@ -13,12 +12,14 @@ Allows connecting to any API REST and get results as js Object. The client has t
 - Allows most common HTTP operations: GET, POST, PUT, DELETE, PATCH.
 - Allows creation of custom HTTP Methods (PURGE, etc.)
 - Direct or through proxy connection to remote API sites.
-- Register remote API operations as client own methods, simplifying reuse.
-- Automatic parsing of XML and JSON response documents as js objects.
+- Register remote API operations as own client methods, simplifying reuse.
 - Dynamic path and query parameters and request headers.
 - Improved Error handling mechanism (client or specific request)
 - Added support for compressed responses: gzip and deflate
 - Added support for follow redirects thanks to great [follow-redirects](https://www.npmjs.com/package/follow-redirects) package
+- Added support for custom request serializers (json,xml and url-endoded included by default)
+- Added support for custom response parsers (json and xml included by default)
+
 
 
 ## Installation
@@ -29,7 +30,7 @@ $ npm install node-rest-client
 
 ### Simple HTTP GET
 
-Client has 2 ways to call a REST service: direct or using registered methods
+Client has two ways to call a REST service: direct or using registered methods
 
 ```javascript
 var Client = require('node-rest-client').Client;
@@ -304,6 +305,63 @@ var args = {
 };
 
 ```
+### Response Parsers
+
+You can add your own response parsers to client, as many as you want. Each parser needs to follow some conventions:
+
+* Must be and object
+* Must have the following attributes:
+    * `name`: Used to identify parser in parsers registry
+    
+    *  `isDefault`: Used to identify parser as regular parser or default parser. Default parser is applied when client cannot find any regular parser that match  to received response
+* Must have the following methods:
+    * `match(response)`: used to find which parser should be used with the response. First parser found will be the one to be used. Its arguments are:
+        1. `response`:`http.ServerResponse`: you can use any argument available in node ServerResponse, for example `headers`
+
+    * `parse(byteBuffer,nrcEventEmitter,parsedCallback)` : this method is where response body should be parsed and passed to client request callback. Its arguments are:
+        1. `byteBuffer`:`Buffer`: Raw response body that should be parsed as js object or whatever you need 
+        2. `nrcEventEmitter`:`client event emitter`: useful to dispatch events during parsing process, for example error events
+        3. `parsedCallback`:`function(parsedData)`: this callback should be invoked when parsing process has finished to pass parsed data to request callback.
+
+Of course any other method or attribute needed for parsing process can be added to parser.
+
+```javascript
+// no "isDefault" attribute 
+var invalid = {
+			   "name":"invalid-parser",
+			   "match":function(response){...},
+			   "parse":function(byteBuffer,nrcEventEmitter,parsedCallback){...}
+			 };
+
+var validParser = {
+				   "name":"valid-parser",
+				   "isDefault": false,
+			   	   "match":function(response){...},
+			       "parse":function(byteBuffer,nrcEventEmitter,parsedCallback){...},
+			       // of course any other args or methods can be added to parser
+			       "otherAttr":"my value",
+			       "otherMethod":function(a,b,c){...}
+				  };			
+
+function OtherParser(name){
+	   this.name: name,
+	   this.isDefault: false,
+	   this.match=function(response){...};
+	   this.parse:function(byteBuffer,nrcEventEmitter,parsedCallback){...};
+		
+}
+
+var instanceParser = new OtherParser("instance-parser");
+
+```
+
+#### Parser Management
+
+Client can manage parsers through the following `parsers` namespace methods:
+
+* `add(parser)`: add a regular or default parser (depending on isDefault attribute value) to parsers registry.
+	1. `parser`: valid parser object. If invalid parser is added an 'error' event is dispatched by client.
+
 
 ### Connect through proxy
 
@@ -479,3 +537,6 @@ client.on('error', function (err) {
 	console.error('Something went wrong on the client', err);
 });
 ```
+
+**NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf.Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. therefore if you are using a version below 0.8.0 of node please use a versión below 1.0.0 of "node-rest-client". _ 
+
