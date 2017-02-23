@@ -2,6 +2,9 @@ var server =require("../server/mock-server"),
 Client=require("../../lib/node-rest-client").Client;
 
 describe('POST Method', function () {
+	
+  this.timeout(150000);
+	
   before(function () {
     server.listen(4444);
     console.log("server started on port 4444");
@@ -9,7 +12,7 @@ describe('POST Method', function () {
 
   describe("#JSON",function(){
 
-    it.only("POST request with path variable substitution", function(done){
+    it("POST request with path variable substitution", function(done){
       var client = new Client();
       var args ={
         path:{testNumber:123, testString:"test"},
@@ -107,7 +110,7 @@ describe('POST Method', function () {
       });
 
       client.post(server.baseURL + "/json/path/post/query?testNumber=123&testString=test", args, function(data, response){
-        //noop
+        // noop
       }).should.throw();
 
     });
@@ -124,7 +127,7 @@ describe('POST Method', function () {
       
 
       client.post(server.baseURL + "/json/path/post/query",args, function(data, response){
-        //noop
+        // noop
       }).should.throw();
 
     });
@@ -144,7 +147,7 @@ describe('POST Method', function () {
       
 
       client.post(server.baseURL + "/json/path/post/query",args, function(data, response){
-        //noop
+        // noop
       }).should.throw();
 
     });
@@ -164,7 +167,7 @@ describe('POST Method', function () {
       client.registerMethod("testMethod",server.baseURL + "/json/path/post/query?testNumber=123&testString=test","POST");
 
       client.methods.testMethod(args, function(data, response){
-        //noop
+        // noop
       }).should.throw();
 
     });
@@ -181,7 +184,7 @@ describe('POST Method', function () {
       client.registerMethod("testMethod",server.baseURL + "/json/path/post/query","POST");
 
       client.methods.testMethod(args, function(data, response){
-        //noop
+        // noop
       }).should.throw();
 
     });
@@ -201,7 +204,7 @@ describe('POST Method', function () {
       client.registerMethod("testMethod",server.baseURL + "/json/path/post/query","POST");
 
       client.methods.testMethod(args, function(data, response){
-        //noop
+        // noop
       }).should.throw();
 
     });
