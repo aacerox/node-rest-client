@@ -118,6 +118,22 @@ var RouteManager = {
 			});
 			res.write(message.toString());
 			res.end();
+		},
+		"/json/test/content/type" : function(req, res) {
+			var message = fs.readFileSync(RouterOptions.JSONMessageFile, 'utf8');
+			res.writeHead(200, {
+				'Content-Type' : 'test/json'
+			});
+			res.write(message.toString());
+			res.end();
+		},
+		"/xml/test/content/type" : function(req, res) {
+			var message = fs.readFileSync(RouterOptions.XMLMessageFile, 'utf8');
+			res.writeHead(200, {
+				'Content-Type' : 'test/xml'
+			});
+			res.write(message.toString());
+			res.end();
 		}
 	},
 	"sleep" : function(ms) {

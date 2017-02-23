@@ -109,6 +109,41 @@ describe('IO Facade', function () {
 
       });
     
+    
+    it("add custom types to args in JSON parser", function(done){
+    	var options={
+    			// customize mime types for json or xml connections 
+    		    mimetypes: {
+    		        json: ["test/json"]    		        
+    		    }
+    	};
+        var client = new Client(options);
+        
+        client.get(server.baseURL + "/json/test/content/type", function(data, response){
+            data.should.not.equal(null);
+            data.should.type("object");
+            done();
+          });        
+        
+      });
+    
+    
+    it.only("add custom types to args in XML parser", function(done){
+    	var options={
+    			// customize mime types for json or xml connections 
+    		    mimetypes: {
+    		        xml: ["test/xml"]
+    		    }
+    	};
+        var client = new Client(options);
+        
+        client.get(server.baseURL + "/xml/test/content/type", function(data, response){
+            data.should.not.equal(null);
+            data.should.type("object");
+            done();
+          });        
+        
+      });
   });
 
 
@@ -178,7 +213,7 @@ describe("#Serializers",function(){
 	      });
 	    
 	    
-	    it.only("request match serializer", function(done){
+	    it("request match serializer", function(done){
 	        var client = new Client(),
 	        args={
 	        	headers:{"test-header":"test"},
