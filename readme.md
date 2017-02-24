@@ -307,7 +307,13 @@ var args = {
 ```
 ### Response Parsers
 
-You can add your own response parsers to client, as many as you want. Each parser needs to follow some conventions:
+You can add your own response parsers to client, as many as you want. There are 2 parser types:
+
+- _Regular parser_: First ones to analyze responses. When a response arrives it will pass through all regular parsers, first parser whose `match` method return true will be the one to process the response. there can be as many regular parsers as you need. you can delete and replace regular parsers when it'll be needed.
+
+- _Default parser_: When no regular parser has been able to process the response, default parser will process it, so it's guaranteed that every response is processed. There can be only one default parser and cannot be deleted but it can be replaced adding a parser with `isDefault` attribute to true.
+
+Each parser - regular or default- needs to follow some conventions:
 
 * Must be and object
 * Must have the following attributes:
@@ -326,7 +332,7 @@ You can add your own response parsers to client, as many as you want. Each parse
 Of course any other method or attribute needed for parsing process can be added to parser.
 
 ```javascript
-// no "isDefault" attribute 
+// no "isDefault" attribute defined 
 var invalid = {
 			   "name":"invalid-parser",
 			   "match":function(response){...},
@@ -355,12 +361,55 @@ var instanceParser = new OtherParser("instance-parser");
 
 ```
 
+By default and to maintain backward compatibility, client comes with 2 regular parsers and 1 default parser:
+
+- JSON parser: it's named 'JSON' in parsers registry and processes responses to js object. As in previous versions you can change content-types used to match responses by adding a  "mimetypes" attribute to client options.
+
+```javascript
+var options = {
+				mimetypes: {
+						json: ["application/json", "application/my-custom-content-type-for-json;charset=utf-8"]
+						
+					}
+				};
+
+var client = new Client(options);				
+
+```
+
+- XML parser: it's named 'XML' in parsers registry and processes responses returned as XML documents to js object. As in previous versions you can change content-types used to match responses by adding a  "mimetypes" attribute to client options.
+
+```javascript
+var options = {
+				mimetypes: {
+						xml: ["application/xml", "application/my-custom-content-type-for-xml"]						
+					}
+				};
+
+var client = new Client(options);
+
+```
+
+- Default Parser: return responses as is, without any adittional processing.
+
 #### Parser Management
 
-Client can manage parsers through the following `parsers` namespace methods:
+Client can manage parsers through the following parsers namespace methods:
 
 * `add(parser)`: add a regular or default parser (depending on isDefault attribute value) to parsers registry.
 	1. `parser`: valid parser object. If invalid parser is added an 'error' event is dispatched by client.
+
+* `remove(parserName)`: removes a parser from parsers registry. If not parser found an 'error' event is dispatched by client.
+	1. `parserName`: valid parser name previously added.
+
+* `find(parserName)`: find and return a parser searched by its name. If not parser found an 'error' event is dispatched by client.
+	1. `parserName`: valid parser name previously added.
+
+* `getAll()`: return a collection of current regular parsers.
+
+* `getDefault()`: return the default parser used to process responses that doesn't match with any regular parser.
+
+* `clean()`: clean regular parser registry. default parser is not afected by this method.
 
 
 ### Connect through proxy
