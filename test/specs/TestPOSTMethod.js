@@ -16,14 +16,14 @@ describe('POST Method', function () {
       var client = new Client();
       var args ={
         path:{testNumber:123, testString:"test"},
-        data:{dataNumber:123, dataString:"test"}
+        data:'{"dataNumber":123, "dataString":"test"}'
 
       };
       client.post(server.baseURL + "/json/path/post/${testNumber}/${testString}",args, function(data, response){
         data.should.not.equal(null);
         data.should.type("object");
         data.url.should.equal("/json/path/post/123/test");
-        data.postData.should.equal('{"dataNumber":123,"dataString":"test"}');
+        data.postData.should.equal('{"dataNumber":123, "dataString":"test"}');
         done();
       });
     });
@@ -33,7 +33,7 @@ describe('POST Method', function () {
       var client = new Client();
       var args ={
         parameters:{testNumber:123, testString:"test"},
-        data:{dataNumber:123, dataString:"test"}
+        data:'{"dataNumber":123,"dataString":"test"}'
       };
       client.post(server.baseURL + "/json/path/post/query",args, function(data, response){
 
@@ -64,7 +64,7 @@ describe('POST Method', function () {
       var client = new Client();
       var args ={
         path:{testNumber:123, testString:"test"},
-        data:{dataNumber:123, dataString:"test"}
+        data:'{"dataNumber":123,"dataString":"test"}'
       };
 
       client.registerMethod("testMethod",server.baseURL + "/json/path/post/${testNumber}/${testString}","POST");
@@ -83,7 +83,7 @@ describe('POST Method', function () {
       var client = new Client();
       var args ={
         parameters:{testNumber:123, testString:"test"},
-        data:{dataNumber:123, dataString:"test"}
+        data:'{"dataNumber":123,"dataString":"test"}'
       };
 
       client.registerMethod("testMethod",server.baseURL + "/json/path/post/query","POST");

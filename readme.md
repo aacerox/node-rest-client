@@ -4,12 +4,13 @@
 
 [![NPM](https://nodei.co/npm/node-rest-client.png?downloads=true)](https://nodei.co/npm/node-rest-client.png?downloads=true)
 
+## Features
 
 Allows connecting to any API REST and get results as js Object. The client has the following features:
 
 - Transparent HTTP/HTTPS connection to remote API sites.
 - Allows simple HTTP basic authentication.
-- Allows most common HTTP operations: GET, POST, PUT, DELETE, PATCH.
+- Allows most common HTTP operations: GET, POST, PUT, DELETE, PATCH or any other method through custom connect method
 - Allows creation of custom HTTP Methods (PURGE, etc.)
 - Direct or through proxy connection to remote API sites.
 - Register remote API operations as own client methods, simplifying reuse.
@@ -305,6 +306,8 @@ var args = {
 };
 
 ```
+
+
 ### Response Parsers
 
 You can add your own response parsers to client, as many as you want. There are 2 parser types:
@@ -316,12 +319,16 @@ You can add your own response parsers to client, as many as you want. There are 
 Each parser - regular or default- needs to follow some conventions:
 
 * Must be and object
+
 * Must have the following attributes:
+
     * `name`: Used to identify parser in parsers registry
     
     *  `isDefault`: Used to identify parser as regular parser or default parser. Default parser is applied when client cannot find any regular parser that match  to received response
+
 * Must have the following methods:
-    * `match(response)`: used to find which parser should be used with the response. First parser found will be the one to be used. Its arguments are:
+
+    * `match(response)`: used to find which parser should be used with a response. First parser found will be the one to be used. Its arguments are:
         1. `response`:`http.ServerResponse`: you can use any argument available in node ServerResponse, for example `headers`
 
     * `parse(byteBuffer,nrcEventEmitter,parsedCallback)` : this method is where response body should be parsed and passed to client request callback. Its arguments are:
@@ -411,6 +418,132 @@ Client can manage parsers through the following parsers namespace methods:
 
 * `clean()`: clean regular parser registry. default parser is not afected by this method.
 
+
+### Request Serializers
+
+You can add your own request serializers to client, as many as you want. There are 2 serializer types:
+
+- _**Regular serializer**_: First ones to analyze requests. When a request is sent it will pass through all regular serializers, first serializer whose `match` method return true will be the one to process the request. there can be as many regular serializers as you need. you can delete and replace regular serializers when it'll be needed.
+
+- _**Default serializer**_: When no regular serializer has been able to process the request, default serializer will process it, so it's guaranteed that every request is processed. There can be only one default serializer and cannot be deleted but it can be replaced adding a serializer with `isDefault` attribute to true.
+
+Each serializer - regular or default- needs to follow some conventions:
+
+* Must be and object
+
+* Must have the following attributes:
+
+    * `name`: Used to identify serializer in serializers registry
+    
+    *  `isDefault`: Used to identify serializer as regular serializer or default serializer. Default serializer is applied when client cannot find any regular serializer that match  to sent request
+
+* Must have the following methods:
+
+    * `match(request)`: used to find which serializer should be used with a request. First serializer found will be the one to be used. Its arguments are:
+        1. `request`:`options passed to http.ClientRequest`: any option passed to a request through client options or request args, for example `headers`
+
+    * `serialize(data,nrcEventEmitter,serializedCallback)` : this method is where request body should be serialized before passing to client request callback. Its arguments are:
+        1. `data`:`args data attribute`: Raw request body as is declared in args request attribute that should be serialized.
+
+        2. `nrcEventEmitter`:`client event emitter`: useful to dispatch events during serialization process, for example error events
+        
+        3. `serializedCallback`:`function(serializedData)`: this callback should be invoked when serialization process has finished to pass serialized data to request callback.
+
+Of course any other method or attribute needed for serialization process can be added to serializer.
+
+```javascript
+// no "isDefault" attribute defined 
+var invalid = {
+			   "name":"invalid-serializer",
+			   "match":function(request){...},
+			   "serialize":function(data,nrcEventEmitter,serializedCallback){...}
+			 };
+
+var validserializer = {
+				   "name":"valid-serializer",
+				   "isDefault": false,
+			   	   "match":function(request){...},
+			       "serialize":function(data,nrcEventEmitter,serializedCallback){...},
+			       // of course any other args or methods can be added to serializer
+			       "otherAttr":"my value",
+			       "otherMethod":function(a,b,c){...}
+				  };			
+
+function OtherSerializer(name){
+	   this.name: name,
+	   this.isDefault: false,
+	   this.match=function(request){...};
+	   this.serialize:function(data,nrcEventEmitter,serializedCallback){...};
+		
+}
+
+var instanceserializer = new OtherSerializer("instance-serializer");
+
+// valid serializer complete example
+
+client.serializers.add({
+						"name":"example-serializer",
+						"isDefault":false,
+						"match":function(request){
+							// only match to requests with  a test-header equal to "hello world!"
+							return request.headers["test-header"]==="hello world!";
+						},							
+						"serialize":function(data,nrcEventEmitter,serializedCallback){
+							// serialization process
+							var serializedData = null;
+
+							if (typeof data === 'string'){
+								serializedData = data.concat(" I'm serialized!!");
+							}else if (typeof data === 'object'){
+								serializedData = data;
+								serializedData.state = "serialized"
+								serializedData = JSON.stringify(serializedData);
+							}
+
+							nrcEventEmitter('serialized','data has been serialized ' + serializedData);
+							// pass serialized data to client to be sent to remote API
+							serializedCallback(serializedData);
+
+						}
+	
+})
+
+
+```
+
+By default client comes with 3 regular serializers and 1 default serializer:
+
+- _**JSON serializer**_: it's named 'JSON' in serializers registry and serialize js objects to its JSON string representation. It will match any request sent  **exactly** with the following content types: "application/json","application/json;charset=utf-8"
+
+
+- _**XML serializer**_: it's named 'XML' in serializers registry and serialize js objects to its XML string representation. It will match any request sent  **exactly** with the following content types: "application/xml","application/xml;charset=utf-8","text/xml","text/xml;charset=utf-8"
+
+- _**URL ENCODE serializer**_: it's named 'FORM-ENCODED' in serializers registry and serialize js objects to its FORM ENCODED string representation. It will match any request sent  **exactly** with the following content types: "application/x-www-form-urlencoded","multipart/form-data","text/plain"
+
+
+- _**Default serializer**_:  serialize request to its string representation, applying toString() method to data parameter.
+
+#### serializer Management
+
+Client can manage serializers through the following serializers namespace methods:
+
+* `add(serializer)`: add a regular or default serializer (depending on isDefault attribute value) to serializers registry.
+	
+	1. `serializer`: valid serializer object. If invalid serializer is added an 'error' event is dispatched by client.
+
+* `remove(serializerName)`: removes a serializer from serializers registry. If not serializer found an 'error' event is dispatched by client.
+	
+	1. `serializerName`: valid serializer name previously added.
+
+* `find(serializerName)`: find and return a serializer searched by its name. If not serializer found an 'error' event is dispatched by client.
+	
+	1. `serializerName`: valid serializer name previously added.
+
+* `getAll()`: return a collection of current regular serializers.
+
+* `getDefault()`: return the default serializer used to process requests that doesn't match with any regular serializer.
+
+* `clean()`: clean regular serializer registry. default serializer is not afected by this method.
 
 ### Connect through proxy
 

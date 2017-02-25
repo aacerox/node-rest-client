@@ -128,7 +128,7 @@ describe('IO Facade', function () {
       });
     
     
-    it.only("add custom types to args in XML parser", function(done){
+    it("add custom types to args in XML parser", function(done){
     	var options={
     			// customize mime types for json or xml connections 
     		    mimetypes: {
@@ -144,6 +144,8 @@ describe('IO Facade', function () {
           });        
         
       });
+
+
   });
 
 
@@ -233,6 +235,34 @@ describe("#Serializers",function(){
 
 	        done();
 	        
+	      });
+
+
+	   it("emit custom event from serializer to client", function(done){
+	        var client = new Client();
+	        client.on('customEvent',function(event){
+	        	event.should.be.equal("my custom event");
+	        	done();
+	        });
+
+
+	        client.serializers.clean();
+	        client.serializers.add({
+						"name":"example-serializer",
+						"isDefault":false,
+						"match":function(request){return true; },							
+						"serialize":function(data,nrcEventEmitter,serializedCallback){							
+							nrcEventEmitter('customEvent','my custom event');
+							// pass serialized data to client to be sent to remote API
+							serializedCallback(data.toString());
+
+						}
+					});
+	        
+	        var args ={data:"test data"}
+      
+      		client.post(server.baseURL + "/json/path/post/query",args, function(data, response){});
+
 	      });
 
 });
