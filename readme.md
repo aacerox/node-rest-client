@@ -18,7 +18,7 @@ Allows connecting to any API REST and get results as js Object. The client has t
 - Improved Error handling mechanism (client or specific request)
 - Added support for compressed responses: gzip and deflate
 - Added support for follow redirects thanks to great [follow-redirects](https://www.npmjs.com/package/follow-redirects) package
-- Added support for custom request serializers (json,xml and url-endoded included by default)
+- Added support for custom request serializers (json,xml and url-encoded included by default)
 - Added support for custom response parsers (json and xml included by default)
 
 
