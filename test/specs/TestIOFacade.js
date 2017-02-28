@@ -146,6 +146,42 @@ describe('IO Facade', function () {
       });
 
 
+   it("get all regular parsers", function(done){
+
+        var client = new Client();
+ 		var parsers = client.parsers.getAll();
+ 		parsers.should.have.length(2);
+ 		done();        
+        
+      });
+
+	   it("emit custom event from parser to client", function(done){
+	        var client = new Client();
+	        client.on('customEvent',function(event){
+	        	event.should.be.equal("my custom event");
+	        	done();
+	        });
+
+
+	        client.parsers.clean();
+	        client.parsers.add({
+						"name":"example-parser",
+						"isDefault":false,
+						"match":function(request){return true; },							
+						"parse":function(byteBuffer,nrcEventEmitter,parsedCallback){							
+							nrcEventEmitter('customEvent','my custom event');
+							// pass serialized data to client to be sent to remote API
+							parsedCallback(byteBuffer.toString());
+
+						}
+					});
+	        
+	        var args ={data:"test data"}
+      
+      		client.post(server.baseURL + "/json/path/post/query",args, function(data, response){});
+
+	      });
+
   });
 
 
@@ -237,6 +273,14 @@ describe("#Serializers",function(){
 	        
 	      });
 
+   it("get all regular serializers", function(done){
+
+        var client = new Client();
+ 		var serializers = client.serializers.getAll();
+ 		serializers.should.have.length(3);
+ 		done();        
+        
+      });
 
 	   it("emit custom event from serializer to client", function(done){
 	        var client = new Client();

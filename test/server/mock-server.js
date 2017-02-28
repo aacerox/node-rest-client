@@ -86,6 +86,15 @@ var RouteManager = {
 			});
 
 		},
+		"/json/error" : function(req, res) {
+			// this.sleep(5000);
+			
+
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end();
+			
+
+		},
 		"/xml/path/post" : function(req, res) {
 			req.on('data', function(data) {
 				// console.log("[SERVER] data = ", data);

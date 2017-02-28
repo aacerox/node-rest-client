@@ -366,6 +366,33 @@ function OtherParser(name){
 
 var instanceParser = new OtherParser("instance-parser");
 
+//valid parser complete example
+
+client.parsers.add({
+						"name":"valid-parser",
+						"isDefault":false,
+						"match":function(response){
+							// only match to responses with  a test-header equal to "hello world!"
+							return response.headers["test-header"]==="hello world!";
+						},							
+						"parse":function(byteBuffer,nrcEventEmitter,parsedCallback){
+							// parsing process
+							var parsedData = null;
+							try{
+								parsedData = JSON.parse(byteBuffer.toString());
+								parsedData.parsed = true;
+
+								// emit custom event
+								nrcEventEmitter('parsed','data has been parsed ' + parsedData);
+
+								// pass parsed data to client request method callback
+								parsedCallback(parsedData);
+							}catch(err){
+								nrcEmitter('error',err);
+							};						
+
+						});
+
 ```
 
 By default and to maintain backward compatibility, client comes with 2 regular parsers and 1 default parser:
@@ -403,13 +430,16 @@ var client = new Client(options);
 
 Client can manage parsers through the following parsers namespace methods:
 
-* `add(parser)`: add a regular or default parser (depending on isDefault attribute value) to parsers registry.
+* `add(parser)`: add a regular or default parser (depending on isDefault attribute value) to parsers registry. If you add a regular parser with the same name as an existing one, it will be overwritten
+	
 	1. `parser`: valid parser object. If invalid parser is added an 'error' event is dispatched by client.
 
 * `remove(parserName)`: removes a parser from parsers registry. If not parser found an 'error' event is dispatched by client.
+	
 	1. `parserName`: valid parser name previously added.
 
 * `find(parserName)`: find and return a parser searched by its name. If not parser found an 'error' event is dispatched by client.
+	
 	1. `parserName`: valid parser name previously added.
 
 * `getAll()`: return a collection of current regular parsers.
@@ -417,6 +447,30 @@ Client can manage parsers through the following parsers namespace methods:
 * `getDefault()`: return the default parser used to process responses that doesn't match with any regular parser.
 
 * `clean()`: clean regular parser registry. default parser is not afected by this method.
+
+```javascript
+var client = new Client();
+
+client.parsers.add({
+				   "name":"valid-parser",
+				   "isDefault": false,
+			   	   "match":function(response){...},
+			       "parse":function(byteBuffer,nrcEventEmitter,parsedCallback){...},
+			       // of course any other args or methods can be added to parser
+			       "otherAttr":"my value",
+			       "otherMethod":function(a,b,c){...}
+				  });
+
+var parser = client.parsers.find("valid-parser");
+
+var defaultParser = client.parsers.getDefault();
+
+var regularParsers = client.parsers.getAll();	
+
+client.parsers.clean();			  
+
+
+```
 
 
 ### Request Serializers
@@ -527,7 +581,7 @@ By default client comes with 3 regular serializers and 1 default serializer:
 
 Client can manage serializers through the following serializers namespace methods:
 
-* `add(serializer)`: add a regular or default serializer (depending on isDefault attribute value) to serializers registry.
+* `add(serializer)`: add a regular or default serializer (depending on isDefault attribute value) to serializers registry.If you add a regular serializer with the same name as an existing one, it will be overwritten
 	
 	1. `serializer`: valid serializer object. If invalid serializer is added an 'error' event is dispatched by client.
 
@@ -544,6 +598,46 @@ Client can manage serializers through the following serializers namespace method
 * `getDefault()`: return the default serializer used to process requests that doesn't match with any regular serializer.
 
 * `clean()`: clean regular serializer registry. default serializer is not afected by this method.
+
+
+```javascript
+var client = new Client();
+
+client.serializers.add({
+						"name":"valid-serializer",
+						"isDefault":false,
+						"match":function(request){
+							// only match to requests with  a test-header equal to "hello world!"
+							return request.headers["test-header"]==="hello world!";
+						},							
+						"serialize":function(data,nrcEventEmitter,serializedCallback){
+							// serialization process
+							var serializedData = null;
+
+							if (typeof data === 'string'){
+								serializedData = data.concat(" I'm serialized!!");
+							}else if (typeof data === 'object'){
+								serializedData = data;
+								serializedData.state = "serialized"
+								serializedData = JSON.stringify(serializedData);
+							}
+
+							nrcEventEmitter('serialized','data has been serialized ' + serializedData);
+							// pass serialized data to client to be sent to remote API
+							serializedCallback(serializedData);
+
+						});
+
+var serializer = client.serializers.find("valid-serializer");
+
+var defaultParser = client.serializers.getDefault();
+
+var regularSerializers = client.serializers.getAll();	
+
+client.serializers.clean();			  
+
+
+```
 
 ### Connect through proxy
 

@@ -217,19 +217,16 @@ describe("#XML",function(){
       var args ={
         data:"<?xml version='1.0'?><testData><testNumber>123</testNumber><testString>123</testString></testData>"
       };
-      client.post(server.baseURL + "/xml/path/post/query",args, function(data, response){        
-        console.log("data es", data);
+      client.post(server.baseURL + "/xml/path/post/query",args, function(data, response){ 
         data.should.type("object");
         data.testData.should.be.ok;
         data.testData.testNumber.should.be.ok;
         data.testData.testString.should.be.ok;
         data.testData.testNumber.should.be.a.Number;
-        data.testData.testString.should.be.a.String;
-        data.testData.testNumber.should.be.equal(123);
-        data.testData.testString.should.be.equal("123");
-
-
-        data.testData.
+        data.testData.testString.should.be.a.String;        
+        data.testData.testNumber[0].should.be.equal("123");
+        data.testData.testString[0].should.be.equal("123");
+      
         
         done();
       });
