@@ -9,3 +9,8 @@ node_modules
 test/multiple-clients-test.js
 
 test/manual-test.js
+
+.DS_Store
+
+.project
+mocha-eclipse.js

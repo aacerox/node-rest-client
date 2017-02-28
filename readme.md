@@ -4,21 +4,23 @@
 
 [![NPM](https://nodei.co/npm/node-rest-client.png?downloads=true)](https://nodei.co/npm/node-rest-client.png?downloads=true)
 
-**NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf.Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. therefore if you are using a version below 0.8.0 of node please use a versión below 1.0.0 of "node-rest-client". _ 
+## Features
 
 Allows connecting to any API REST and get results as js Object. The client has the following features:
 
 - Transparent HTTP/HTTPS connection to remote API sites.
 - Allows simple HTTP basic authentication.
-- Allows most common HTTP operations: GET, POST, PUT, DELETE, PATCH.
+- Allows most common HTTP operations: GET, POST, PUT, DELETE, PATCH or any other method through custom connect method
 - Allows creation of custom HTTP Methods (PURGE, etc.)
 - Direct or through proxy connection to remote API sites.
-- Register remote API operations as client own methods, simplifying reuse.
-- Automatic parsing of XML and JSON response documents as js objects.
+- Register remote API operations as own client methods, simplifying reuse.
 - Dynamic path and query parameters and request headers.
 - Improved Error handling mechanism (client or specific request)
 - Added support for compressed responses: gzip and deflate
 - Added support for follow redirects thanks to great [follow-redirects](https://www.npmjs.com/package/follow-redirects) package
+- Added support for custom request serializers (json,xml and url-encoded included by default)
+- Added support for custom response parsers (json and xml included by default)
+
 
 
 ## Installation
@@ -29,7 +31,7 @@ $ npm install node-rest-client
 
 ### Simple HTTP GET
 
-Client has 2 ways to call a REST service: direct or using registered methods
+Client has two ways to call a REST service: direct or using registered methods
 
 ```javascript
 var Client = require('node-rest-client').Client;
@@ -104,12 +106,12 @@ var client = new Client();
 var args = {
 	data: { test: "hello" }, // data passed to REST method (only useful in POST, PUT or PATCH methods)
 	path: { "id": 120 }, // path substitution var
-	parameters: { arg1: "hello", arg2: "world" }, // query parameter substitution vars
+	parameters: { arg1: "hello", arg2: "world" }, // this is serialized as URL parameters
 	headers: { "test-header": "client-api" } // request headers
 };
 
 
-client.get("http://remote.site/rest/json/${id}/method?arg1=hello&arg2=world", args,
+client.get("http://remote.site/rest/json/${id}/method", args,
 	function (data, response) {
 		// parsed response body as js object
 		console.log(data);
@@ -144,8 +146,7 @@ var Client = require('node-rest-client').Client;
 var client = new Client();
 
 var args = {
-	path: { "id": 120, "arg1": "hello", "arg2": "world" },
-	parameters: { arg1: "hello", arg2: "world" },
+	path: { "id": 120, "arg1": "hello", "arg2": "world" },	
 	headers: { "test-header": "client-api" }
 };
 
@@ -175,7 +176,7 @@ var args = {
 	data: "<xml><arg1>hello</arg1><arg2>world</arg2></xml>"
 };
 
-client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", args, function (data, response) {
+client.post("http://remote.site/rest/xml/${id}/method", args, function (data, response) {
 	// parsed response body as js object
 	console.log(data);
 	// raw response
@@ -235,7 +236,7 @@ var args = {
 };
 
 
-client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", args, function (data, response) {
+client.post("http://remote.site/rest/xml/${id}/method", args, function (data, response) {
 	// parsed response body as js object
 	console.log(data);
 	// raw response
@@ -266,7 +267,7 @@ var args = {
 };
 
 
-var req = client.post("http://remote.site/rest/xml/${id}/method?arg1=hello&arg2=world", args, function (data, response) {
+var req = client.post("http://remote.site/rest/xml/${id}/method", args, function (data, response) {
 	// parsed response body as js object
 	console.log(data);
 	// raw response
@@ -303,6 +304,338 @@ var args = {
 		timeout: 1000 //response timeout
 	}
 };
+
+```
+
+
+### Response Parsers
+
+You can add your own response parsers to client, as many as you want. There are 2 parser types:
+
+- _**Regular parser**_: First ones to analyze responses. When a response arrives it will pass through all regular parsers, first parser whose `match` method return true will be the one to process the response. there can be as many regular parsers as you need. you can delete and replace regular parsers when it'll be needed.
+
+- _**Default parser**_: When no regular parser has been able to process the response, default parser will process it, so it's guaranteed that every response is processed. There can be only one default parser and cannot be deleted but it can be replaced adding a parser with `isDefault` attribute to true.
+
+Each parser - regular or default- needs to follow some conventions:
+
+* Must be and object
+
+* Must have the following attributes:
+
+    * `name`: Used to identify parser in parsers registry
+    
+    *  `isDefault`: Used to identify parser as regular parser or default parser. Default parser is applied when client cannot find any regular parser that match  to received response
+
+* Must have the following methods:
+
+    * `match(response)`: used to find which parser should be used with a response. First parser found will be the one to be used. Its arguments are:
+        1. `response`:`http.ServerResponse`: you can use any argument available in node ServerResponse, for example `headers`
+
+    * `parse(byteBuffer,nrcEventEmitter,parsedCallback)` : this method is where response body should be parsed and passed to client request callback. Its arguments are:
+        1. `byteBuffer`:`Buffer`: Raw response body that should be parsed as js object or whatever you need 
+        2. `nrcEventEmitter`:`client event emitter`: useful to dispatch events during parsing process, for example error events
+        3. `parsedCallback`:`function(parsedData)`: this callback should be invoked when parsing process has finished to pass parsed data to request callback.
+
+Of course any other method or attribute needed for parsing process can be added to parser.
+
+```javascript
+// no "isDefault" attribute defined 
+var invalid = {
+			   "name":"invalid-parser",
+			   "match":function(response){...},
+			   "parse":function(byteBuffer,nrcEventEmitter,parsedCallback){...}
+			 };
+
+var validParser = {
+				   "name":"valid-parser",
+				   "isDefault": false,
+			   	   "match":function(response){...},
+			       "parse":function(byteBuffer,nrcEventEmitter,parsedCallback){...},
+			       // of course any other args or methods can be added to parser
+			       "otherAttr":"my value",
+			       "otherMethod":function(a,b,c){...}
+				  };			
+
+function OtherParser(name){
+	   this.name: name,
+	   this.isDefault: false,
+	   this.match=function(response){...};
+	   this.parse:function(byteBuffer,nrcEventEmitter,parsedCallback){...};
+		
+}
+
+var instanceParser = new OtherParser("instance-parser");
+
+//valid parser complete example
+
+client.parsers.add({
+						"name":"valid-parser",
+						"isDefault":false,
+						"match":function(response){
+							// only match to responses with  a test-header equal to "hello world!"
+							return response.headers["test-header"]==="hello world!";
+						},							
+						"parse":function(byteBuffer,nrcEventEmitter,parsedCallback){
+							// parsing process
+							var parsedData = null;
+							try{
+								parsedData = JSON.parse(byteBuffer.toString());
+								parsedData.parsed = true;
+
+								// emit custom event
+								nrcEventEmitter('parsed','data has been parsed ' + parsedData);
+
+								// pass parsed data to client request method callback
+								parsedCallback(parsedData);
+							}catch(err){
+								nrcEmitter('error',err);
+							};						
+
+						});
+
+```
+
+By default and to maintain backward compatibility, client comes with 2 regular parsers and 1 default parser:
+
+- _**JSON parser**_: it's named 'JSON' in parsers registry and processes responses to js object. As in previous versions you can change content-types used to match responses by adding a  "mimetypes" attribute to client options.
+
+```javascript
+var options = {
+				mimetypes: {
+						json: ["application/json", "application/my-custom-content-type-for-json;charset=utf-8"]
+						
+					}
+				};
+
+var client = new Client(options);				
+
+```
+
+- _**XML parser**_: it's named 'XML' in parsers registry and processes responses returned as XML documents to js object. As in previous versions you can change content-types used to match responses by adding a  "mimetypes" attribute to client options.
+
+```javascript
+var options = {
+				mimetypes: {
+						xml: ["application/xml", "application/my-custom-content-type-for-xml"]						
+					}
+				};
+
+var client = new Client(options);
+
+```
+
+- _**Default Parser**_: return responses as is, without any adittional processing.
+
+#### Parser Management
+
+Client can manage parsers through the following parsers namespace methods:
+
+* `add(parser)`: add a regular or default parser (depending on isDefault attribute value) to parsers registry. If you add a regular parser with the same name as an existing one, it will be overwritten
+	
+	1. `parser`: valid parser object. If invalid parser is added an 'error' event is dispatched by client.
+
+* `remove(parserName)`: removes a parser from parsers registry. If not parser found an 'error' event is dispatched by client.
+	
+	1. `parserName`: valid parser name previously added.
+
+* `find(parserName)`: find and return a parser searched by its name. If not parser found an 'error' event is dispatched by client.
+	
+	1. `parserName`: valid parser name previously added.
+
+* `getAll()`: return a collection of current regular parsers.
+
+* `getDefault()`: return the default parser used to process responses that doesn't match with any regular parser.
+
+* `clean()`: clean regular parser registry. default parser is not afected by this method.
+
+```javascript
+var client = new Client();
+
+client.parsers.add({
+				   "name":"valid-parser",
+				   "isDefault": false,
+			   	   "match":function(response){...},
+			       "parse":function(byteBuffer,nrcEventEmitter,parsedCallback){...},
+			       // of course any other args or methods can be added to parser
+			       "otherAttr":"my value",
+			       "otherMethod":function(a,b,c){...}
+				  });
+
+var parser = client.parsers.find("valid-parser");
+
+var defaultParser = client.parsers.getDefault();
+
+var regularParsers = client.parsers.getAll();	
+
+client.parsers.clean();			  
+
+
+```
+
+
+### Request Serializers
+
+You can add your own request serializers to client, as many as you want. There are 2 serializer types:
+
+- _**Regular serializer**_: First ones to analyze requests. When a request is sent it will pass through all regular serializers, first serializer whose `match` method return true will be the one to process the request. there can be as many regular serializers as you need. you can delete and replace regular serializers when it'll be needed.
+
+- _**Default serializer**_: When no regular serializer has been able to process the request, default serializer will process it, so it's guaranteed that every request is processed. There can be only one default serializer and cannot be deleted but it can be replaced adding a serializer with `isDefault` attribute to true.
+
+Each serializer - regular or default- needs to follow some conventions:
+
+* Must be and object
+
+* Must have the following attributes:
+
+    * `name`: Used to identify serializer in serializers registry
+    
+    *  `isDefault`: Used to identify serializer as regular serializer or default serializer. Default serializer is applied when client cannot find any regular serializer that match  to sent request
+
+* Must have the following methods:
+
+    * `match(request)`: used to find which serializer should be used with a request. First serializer found will be the one to be used. Its arguments are:
+        1. `request`:`options passed to http.ClientRequest`: any option passed to a request through client options or request args, for example `headers`
+
+    * `serialize(data,nrcEventEmitter,serializedCallback)` : this method is where request body should be serialized before passing to client request callback. Its arguments are:
+        1. `data`:`args data attribute`: Raw request body as is declared in args request attribute that should be serialized.
+
+        2. `nrcEventEmitter`:`client event emitter`: useful to dispatch events during serialization process, for example error events
+        
+        3. `serializedCallback`:`function(serializedData)`: this callback should be invoked when serialization process has finished to pass serialized data to request callback.
+
+Of course any other method or attribute needed for serialization process can be added to serializer.
+
+```javascript
+// no "isDefault" attribute defined 
+var invalid = {
+			   "name":"invalid-serializer",
+			   "match":function(request){...},
+			   "serialize":function(data,nrcEventEmitter,serializedCallback){...}
+			 };
+
+var validserializer = {
+				   "name":"valid-serializer",
+				   "isDefault": false,
+			   	   "match":function(request){...},
+			       "serialize":function(data,nrcEventEmitter,serializedCallback){...},
+			       // of course any other args or methods can be added to serializer
+			       "otherAttr":"my value",
+			       "otherMethod":function(a,b,c){...}
+				  };			
+
+function OtherSerializer(name){
+	   this.name: name,
+	   this.isDefault: false,
+	   this.match=function(request){...};
+	   this.serialize:function(data,nrcEventEmitter,serializedCallback){...};
+		
+}
+
+var instanceserializer = new OtherSerializer("instance-serializer");
+
+// valid serializer complete example
+
+client.serializers.add({
+						"name":"example-serializer",
+						"isDefault":false,
+						"match":function(request){
+							// only match to requests with  a test-header equal to "hello world!"
+							return request.headers["test-header"]==="hello world!";
+						},							
+						"serialize":function(data,nrcEventEmitter,serializedCallback){
+							// serialization process
+							var serializedData = null;
+
+							if (typeof data === 'string'){
+								serializedData = data.concat(" I'm serialized!!");
+							}else if (typeof data === 'object'){
+								serializedData = data;
+								serializedData.state = "serialized"
+								serializedData = JSON.stringify(serializedData);
+							}
+
+							nrcEventEmitter('serialized','data has been serialized ' + serializedData);
+							// pass serialized data to client to be sent to remote API
+							serializedCallback(serializedData);
+
+						}
+	
+})
+
+
+```
+
+By default client comes with 3 regular serializers and 1 default serializer:
+
+- _**JSON serializer**_: it's named 'JSON' in serializers registry and serialize js objects to its JSON string representation. It will match any request sent  **exactly** with the following content types: "application/json","application/json;charset=utf-8"
+
+
+- _**XML serializer**_: it's named 'XML' in serializers registry and serialize js objects to its XML string representation. It will match any request sent  **exactly** with the following content types: "application/xml","application/xml;charset=utf-8","text/xml","text/xml;charset=utf-8"
+
+- _**URL ENCODE serializer**_: it's named 'FORM-ENCODED' in serializers registry and serialize js objects to its FORM ENCODED string representation. It will match any request sent  **exactly** with the following content types: "application/x-www-form-urlencoded","multipart/form-data","text/plain"
+
+
+- _**Default serializer**_:  serialize request to its string representation, applying toString() method to data parameter.
+
+#### serializer Management
+
+Client can manage serializers through the following serializers namespace methods:
+
+* `add(serializer)`: add a regular or default serializer (depending on isDefault attribute value) to serializers registry.If you add a regular serializer with the same name as an existing one, it will be overwritten
+	
+	1. `serializer`: valid serializer object. If invalid serializer is added an 'error' event is dispatched by client.
+
+* `remove(serializerName)`: removes a serializer from serializers registry. If not serializer found an 'error' event is dispatched by client.
+	
+	1. `serializerName`: valid serializer name previously added.
+
+* `find(serializerName)`: find and return a serializer searched by its name. If not serializer found an 'error' event is dispatched by client.
+	
+	1. `serializerName`: valid serializer name previously added.
+
+* `getAll()`: return a collection of current regular serializers.
+
+* `getDefault()`: return the default serializer used to process requests that doesn't match with any regular serializer.
+
+* `clean()`: clean regular serializer registry. default serializer is not afected by this method.
+
+
+```javascript
+var client = new Client();
+
+client.serializers.add({
+						"name":"valid-serializer",
+						"isDefault":false,
+						"match":function(request){
+							// only match to requests with  a test-header equal to "hello world!"
+							return request.headers["test-header"]==="hello world!";
+						},							
+						"serialize":function(data,nrcEventEmitter,serializedCallback){
+							// serialization process
+							var serializedData = null;
+
+							if (typeof data === 'string'){
+								serializedData = data.concat(" I'm serialized!!");
+							}else if (typeof data === 'object'){
+								serializedData = data;
+								serializedData.state = "serialized"
+								serializedData = JSON.stringify(serializedData);
+							}
+
+							nrcEventEmitter('serialized','data has been serialized ' + serializedData);
+							// pass serialized data to client to be sent to remote API
+							serializedCallback(serializedData);
+
+						});
+
+var serializer = client.serializers.find("valid-serializer");
+
+var defaultParser = client.serializers.getDefault();
+
+var regularSerializers = client.serializers.getAll();	
+
+client.serializers.clean();			  
+
 
 ```
 
@@ -383,7 +716,7 @@ var options = {
 		ciphers: 'ECDHE-RSA-AES256-SHA:AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
 		honorCipherOrder: true
 	},
-	// customize mime types for json or xml connections
+	// will replace content-types used to match responses in JSON and XML parsers
 	mimetypes: {
 		json: ["application/json", "application/json;charset=utf-8"],
 		xml: ["application/xml", "application/xml;charset=utf-8"]
@@ -480,3 +813,6 @@ client.on('error', function (err) {
 	console.error('Something went wrong on the client', err);
 });
 ```
+
+**NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf.Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. therefore if you are using a version below 0.8.0 of node please use a versión below 1.0.0 of "node-rest-client". _ 
+
