@@ -424,6 +424,16 @@ var client = new Client(options);
 
 ```
 
+Additionally in this parser there's an attribute "options" where you can customize xml2js parser options. Please refer to [xml2js package](https://www.npmjs.com/package/xml2js) for valid options.
+```javascript
+
+var client = new Client();
+
+client.parsers.find("XML").options= {"explicitArray":false, "xmldec":{"encoding": 'UTF-8'}};
+
+```
+
+
 - _**Default Parser**_: return responses as is, without any adittional processing.
 
 #### Parser Management

@@ -224,8 +224,8 @@ describe("#XML",function(){
         data.testData.testString.should.be.ok;
         data.testData.testNumber.should.be.a.Number;
         data.testData.testString.should.be.a.String;        
-        data.testData.testNumber[0].should.be.equal("123");
-        data.testData.testString[0].should.be.equal("123");
+        data.testData.testNumber.should.be.equal("123");
+        data.testData.testString.should.be.equal("123");
       
         
         done();
