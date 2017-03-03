@@ -14,3 +14,5 @@ test/manual-test.js
 
 .project
 mocha-eclipse.js
+node-rest-client.sublime-project
+node-rest-client.sublime-workspace
