@@ -424,6 +424,17 @@ var client = new Client(options);
 
 ```
 
+Additionally in this parser there's an attribute "options" where you can customize xml2js parser options. Please refer to [xml2js package](https://www.npmjs.com/package/xml2js) for valid parser options.
+
+```javascript
+
+var client = new Client();
+
+client.parsers.find("XML").options= {"explicitArray":false, "ignoreAttrs":true};
+
+```
+
+
 - _**Default Parser**_: return responses as is, without any adittional processing.
 
 #### Parser Management
@@ -571,6 +582,15 @@ By default client comes with 3 regular serializers and 1 default serializer:
 
 
 - _**XML serializer**_: it's named 'XML' in serializers registry and serialize js objects to its XML string representation. It will match any request sent  **exactly** with the following content types: "application/xml","application/xml;charset=utf-8","text/xml","text/xml;charset=utf-8"
+
+Additionally in this parser there's an attribute "options" where you can customize xml2js serializer options. Please refer to [xml2js package](https://www.npmjs.com/package/xml2js) for valid builder options.
+
+```javascript
+var client = new Client();
+
+client.serializers.find("XML").options={"renderOpts":{"pretty": true }};
+
+```
 
 - _**URL ENCODE serializer**_: it's named 'FORM-ENCODED' in serializers registry and serialize js objects to its FORM ENCODED string representation. It will match any request sent  **exactly** with the following content types: "application/x-www-form-urlencoded","multipart/form-data","text/plain"
 

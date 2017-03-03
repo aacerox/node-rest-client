@@ -101,8 +101,7 @@ var RouteManager = {
 				res.writeHead(200, {
 					'Content-Type' : 'application/xml'
 				});
-				// res.writeHead(200, {'Content-Type': 'text/plain'});
-				console.log("en server responde ", data.toString());
+				// res.writeHead(200, {'Content-Type': 'text/plain'});				
 				res.write(data.toString());
 				res.end();
 			});
