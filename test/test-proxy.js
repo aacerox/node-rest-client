@@ -1,5 +1,4 @@
 var http = require('http');
-var sys  = require('sys');
 var fs   = require('fs');
 
 var blacklist = [];
@@ -9,16 +8,16 @@ fs.watchFile('./blacklist', function(c,p) { update_blacklist(); });
 fs.watchFile('./iplist', function(c,p) { update_iplist(); });
 
 function update_blacklist() {
-  sys.log("Updating blacklist.");
+  console.log("Updating blacklist.");
   blacklist = fs.readFileSync('./blacklist').split('\n')
-  .filter(function(rx) { return rx.length })
-  .map(function(rx) { return RegExp(rx) });
+              .filter(function(rx) { return rx.length })
+              .map(function(rx) { return RegExp(rx) });
 }
 
 function update_iplist() {
-  sys.log("Updating iplist.");
+  console.log("Updating iplist.");
   iplist = fs.readFileSync('./iplist').split('\n')
-  .filter(function(rx) { return rx.length });
+           .filter(function(rx) { return rx.length });
 }
 
 function ip_allowed(ip) {
@@ -50,20 +49,27 @@ http.createServer(function(request, response) {
   if (!ip_allowed(ip)) {
     msg = "IP " + ip + " is not allowed to use this proxy";
     deny(response, msg);
-    sys.log(msg);
+    console.log(msg);
     return;
   }
 
   if (!host_allowed(request.url)) {
     msg = "Host " + request.url + " has been denied by proxy configuration";
     deny(response, msg);
-    sys.log(msg);
+    console.log(msg);
     return;
   }
 
-  sys.log(ip + ": " + request.method + " " + request.url);
-  var proxy = http.createClient(80, request.headers['host']);
-  var proxy_request = proxy.request(request.method, request.url, request.headers);
+  console.log(ip + ": " + request.method + " " + request.url);
+  var agent = new http.Agent({ host: request.headers['host'], port: 80, maxSockets: 1 });
+  var proxy_request = http.request({
+    host: request.headers['host'],
+    port: 80,
+    method: request.method,
+    path: request.url,
+    headers: request.headers,
+    agent: agent
+  });
   proxy_request.addListener('response', function(proxy_response) {
     proxy_response.addListener('data', function(chunk) {
       response.write(chunk, 'binary');
