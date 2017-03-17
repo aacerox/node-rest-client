@@ -142,7 +142,40 @@ var RouteManager = {
 			});
 			res.write(message.toString());
 			res.end();
+		},
+		"/followRedirects":function(req, res){
+
+			var repeatOffset = req.url.indexOf("?"),
+			repeat = parseInt(req.url.substring(repeatOffset + 1),10),
+			location  = "";
+
+			if (repeatOffset === 0){
+				res.writeHead(301, {
+					'Location':'http://localhost:4444/redirected'
+				});
+			}else{
+				if (repeat > 0){
+					res.writeHead(301, {
+						'Location':'http://localhost:4444/followRedirects?' + --repeat
+					});
+				}else{
+					res.writeHead(301, {
+						'Location':'http://localhost:4444/redirected'
+					});
+				}
+
+			}
+			res.end();
+		},
+		"/redirected":function(req, res){
+			var message={"redirected":++this.redirectCount};
+			res.writeHead(200, {
+				'Content-Type' : 'application/json; charset=utf-8'
+			});
+			res.write(JSON.stringify(message));
+			res.end();
 		}
+
 	},
 	"sleep" : function(ms) {
 
@@ -150,7 +183,9 @@ var RouteManager = {
 		while (new Date().getTime() < stop + ms) {
 			;
 		}
-	}
+	},
+	"redirectCount":0,
+	"redirectLimit":10
 
 };
 
