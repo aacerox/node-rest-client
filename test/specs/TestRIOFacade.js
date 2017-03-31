@@ -312,7 +312,6 @@ describe("#Serializers",function(){
 });
 
 after(function () {
-  server.close();
-  console.log("server stopped");
+  server.close();  
 });
 });
