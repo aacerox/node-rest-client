@@ -9,9 +9,9 @@
   },
   "main": "./lib/node-rest-client",
   "dependencies": {
-    "xml2js":">=0.2.4",
-    "debug": "~2.2.0",
-    "follow-redirects":">=1.2.0"
+    "xml2js":">=0.4.17",
+    "debug": "~2.6.8",
+    "follow-redirects":">=1.2.3"
     },
   "devDependencies": {
     "mocha": "*",
