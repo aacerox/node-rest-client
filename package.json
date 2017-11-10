@@ -10,7 +10,7 @@
   "main": "./lib/node-rest-client",
   "dependencies": {
     "xml2js":">=0.4.17",
-    "debug": "~2.6.8",
+    "debug": "~3.1.0",
     "follow-redirects":">=1.2.3"
     },
   "devDependencies": {
