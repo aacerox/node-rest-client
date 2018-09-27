@@ -95,7 +95,7 @@ If no "Content-Type" header is set as client arg POST,PUT and PATCH methods will
 
 ### Passing args to registered methods
 
-You can pass diferents args to registered methods, simplifying reuse: path replace parameters, query parameters, custom headers 
+You can pass different args to registered methods, simplifying reuse: path replace parameters, query parameters, custom headers 
 
 ```javascript
 var Client = require('node-rest-client').Client;
@@ -227,7 +227,7 @@ var args = {
 	requestConfig: {
 		timeout: 1000, //request timeout in milliseconds
 		noDelay: true, //Enable/disable the Nagle algorithm
-		keepAlive: true, //Enable/disable keep-alive functionalityidle socket.
+		keepAlive: true, //Enable/disable keep-alive functionality idle socket.
 		keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent
 	},
 	responseConfig: {
@@ -258,7 +258,7 @@ var args = {
 	requestConfig: {
 		timeout: 1000, //request timeout in milliseconds
 		noDelay: true, //Enable/disable the Nagle algorithm
-		keepAlive: true, //Enable/disable keep-alive functionalityidle socket.
+		keepAlive: true, //Enable/disable keep-alive functionality idle socket.
 		keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent
 	},
 	responseConfig: {
@@ -318,7 +318,7 @@ You can add your own response parsers to client, as many as you want. There are 
 
 Each parser - regular or default- needs to follow some conventions:
 
-* Must be and object
+* Must be an object
 
 * Must have the following attributes:
 
@@ -435,7 +435,7 @@ client.parsers.find("XML").options= {"explicitArray":false, "ignoreAttrs":true};
 ```
 
 
-- _**Default Parser**_: return responses as is, without any adittional processing.
+- _**Default Parser**_: return responses as is, without any additional processing.
 
 #### Parser Management
 
@@ -457,7 +457,7 @@ Client can manage parsers through the following parsers namespace methods:
 
 * `getDefault()`: return the default parser used to process responses that doesn't match with any regular parser.
 
-* `clean()`: clean regular parser registry. default parser is not afected by this method.
+* `clean()`: clean regular parser registry. default parser is not affected by this method.
 
 ```javascript
 var client = new Client();
@@ -494,7 +494,7 @@ You can add your own request serializers to client, as many as you want. There a
 
 Each serializer - regular or default- needs to follow some conventions:
 
-* Must be and object
+* Must be an object
 
 * Must have the following attributes:
 
@@ -601,7 +601,7 @@ client.serializers.find("XML").options={"renderOpts":{"pretty": true }};
 
 Client can manage serializers through the following serializers namespace methods:
 
-* `add(serializer)`: add a regular or default serializer (depending on isDefault attribute value) to serializers registry.If you add a regular serializer with the same name as an existing one, it will be overwritten
+* `add(serializer)`: add a regular or default serializer (depending on isDefault attribute value) to serializers registry. If you add a regular serializer with the same name as an existing one, it will be overwritten
 	
 	1. `serializer`: valid serializer object. If invalid serializer is added an 'error' event is dispatched by client.
 
@@ -617,7 +617,7 @@ Client can manage serializers through the following serializers namespace method
 
 * `getDefault()`: return the default serializer used to process requests that doesn't match with any regular serializer.
 
-* `clean()`: clean regular serializer registry. default serializer is not afected by this method.
+* `clean()`: clean regular serializer registry. default serializer is not affected by this method.
 
 
 ```javascript
@@ -729,7 +729,7 @@ var options = {
 		user: "ellen", // proxy username if required
 		password: "ripley" // proxy pass if required
 	},
-	// aditional connection options passed to node http.request y https.request methods 
+	// additional connection options passed to node http.request and https.request methods 
 	// (ie: options to connect to IIS with SSL)	
 	connection: {
 		secureOptions: constants.SSL_OP_NO_TLSv1_2,
@@ -746,7 +746,7 @@ var options = {
 	requestConfig: {
 		timeout: 1000, //request timeout in milliseconds
 		noDelay: true, //Enable/disable the Nagle algorithm
-		keepAlive: true, //Enable/disable keep-alive functionalityidle socket.
+		keepAlive: true, //Enable/disable keep-alive functionality idle socket.
 		keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent
 	},
 	responseConfig: {
@@ -755,7 +755,7 @@ var options = {
 };
 ```
 Note that requestConfig and responseConfig options if set on client instantiation apply to all of its requests/responses
-and is only overriden by request or reponse configs passed as args in method calls.
+and is only overridden by request or response configs passed as args in method calls.
 
 
 ### Managing Requests
@@ -768,7 +768,7 @@ var Client = require('node-rest-client').Client;
 var client = new Client();
 
 var args = {
-	requesConfig: { timeout: 1000 },
+	requestConfig: { timeout: 1000 },
 	responseConfig: { timeout: 2000 }
 };
 
@@ -834,5 +834,5 @@ client.on('error', function (err) {
 });
 ```
 
-**NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf.Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. therefore if you are using a version below 0.8.0 of node please use a versión below 1.0.0 of "node-rest-client". _ 
+**NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf. Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. Therefore if you are using a version below 0.8.0 of node please use a version below 1.0.0 of "node-rest-client". _ 
 
