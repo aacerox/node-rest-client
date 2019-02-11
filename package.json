@@ -4,19 +4,19 @@
   "description": "node API REST client",
   "version": "3.1.0",
   "repository": {
-    "type":"git",
+    "type": "git",
     "url": "https://github.com/aacerox/node-rest-client.git"
   },
   "main": "./lib/node-rest-client",
   "dependencies": {
-    "xml2js":">=0.2.4",
-    "debug": "~2.2.0",
-    "follow-redirects":">=1.2.0"
-    },
+    "xml2js": ">=0.4.19",
+    "debug": "~4.1.1",
+    "follow-redirects": ">=1.6.1"
+  },
   "devDependencies": {
     "mocha": "*",
-    "should": ">= 0.0.1"
-    },
+    "should": ">=13.2.3"
+  },
   "optionalDependencies": {},
   "engines": {
     "node": "*"
