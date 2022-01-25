@@ -9,14 +9,14 @@ fs.watchFile('./iplist', function(c,p) { update_iplist(); });
 
 function update_blacklist() {
   console.log("Updating blacklist.");
-  blacklist = fs.readFileSync('./blacklist').split('\n')
+  blacklist = fs.readFileSync('./blacklist', {encoding: 'utf-8'}).split('\n')
               .filter(function(rx) { return rx.length })
               .map(function(rx) { return RegExp(rx) });
 }
 
 function update_iplist() {
   console.log("Updating iplist.");
-  iplist = fs.readFileSync('./iplist').split('\n')
+  iplist = fs.readFileSync('./iplist', {encoding: 'utf-8'}).split('\n')
            .filter(function(rx) { return rx.length });
 }
 
