@@ -263,10 +263,11 @@ describe("#Serializers",function(){
 	                
 	        var request = client.post(server.baseURL + "/json/path/post",args, function(data, response){
 	            data.postData.should.not.equal(null);
-	            data.postData.should.type("object");
-	            data.postData.should.have.property("serialized");
-	            data.postData.serialized.should.be.a.Boolean;
-	            data.postData.serialized.should.be.true;	            
+	            data.postData.should.type("string");
+	            var obj = JSON.parse(data.postData);
+	            obj.should.have.property("serialized");
+	            obj.serialized.should.be.a.Boolean;
+	            obj.serialized.should.be.true;	            
 	          });       
 
 	        done();
