@@ -2,21 +2,21 @@
   "author": "manish dixit",
   "name": "tm-node-rest-client",
   "description": "node API REST client",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "repository": {
     "type":"git",
-    "url": "https://github.com/manishdixit18/node-rest-client.git"
+    "url": "https://github.com/Turtlemint-India/tm-node-rest-client"
   },
   "main": "./lib/node-rest-client",
   "dependencies": {
-    "xml2js":">=0.2.4",
-    "debug": "~2.2.0",
-    "follow-redirects":">=1.2.0"
-    },
+    "xml2js": ">=0.4.23",
+    "debug": "~4.3.3",
+    "follow-redirects": ">=1.14.7"
+  },
   "devDependencies": {
     "mocha": "*",
     "should": ">= 0.0.1"
-    },
+  },
   "optionalDependencies": {},
   "engines": {
     "node": "*"

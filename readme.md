@@ -289,6 +289,41 @@ req.on('error', function (err) {
 	console.log('request error', err);
 });
 ```
+
+### Setup client to trust self-signed certificate with custom CA chain
+In Internet mostly recommend solution to handle self-signed certificate is to just disable verification of server.
+**NEVER DO THAT IN PRODUCTION!**
+You can do that only for development purpose - never in production because it puts great security risk on your business.
+
+However if you are connecting to a known server using self-signed certificate or a company server signed with corporate CA you can easily setup client to trust them and being secured in same moment.
+So for example certificate chain:
+
+```
++-- root-CA (self-signed)
+|   +-- department-CA (singed with root-CA)
+|       +-- domain (signed with department-CA)
+```
+
+a solution is as follow:
+
+```javascript
+var fs = required('fs');
+var trustedCertificates = [
+fs.readFileSync('/PATH/TO/DOMAIN/CERTIFICATE'),
+fs.readFileSync('/PATH/TO/DEPARTMENT/CA'),
+fs.readFileSync('/PATH/TO/ROOT/CA')
+];
+
+var options = {
+	connection: {
+		ca: trustedCertificates
+	}
+};
+var client = new Client(options);
+```
+
+Note that for readability format of certificate are skipped as multiple ones are supported.
+
 ### Follows Redirect
 Node REST client follows redirects by default to a maximum of 21 redirects, but it's also possible to change follows redirect default config in each request done by the client
 ```javascript
