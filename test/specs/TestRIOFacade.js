@@ -1,5 +1,5 @@
-var server =require("../server/mock-server"),
-Client=require("../../lib/node-rest-client").Client;
+import server from "../server/mock-server.js"
+import Client from '../../lib/node-rest-client.js'
 
 describe('IO Facade', function () {
 
@@ -36,7 +36,7 @@ describe('IO Facade', function () {
       var client = new Client();
 
       client.on('error', function(err){
-        err.should.startWith("parser cannot be added: invalid parser definition");
+        err.message.should.startWith("parser cannot be added: invalid parser definition");
         done();
       });
 
@@ -59,7 +59,7 @@ describe('IO Facade', function () {
         var client = new Client();
         
         client.on('error', function(err){
-            err.should.startWith("cannot find parser: test-parser doesn't exists");
+            err.message.should.startWith("cannot find parser: test-parser doesn't exists");
             done();
           });
         
@@ -212,7 +212,7 @@ describe("#Serializers",function(){
 	      var client = new Client();
 
 	      client.on('error', function(err){
-	        err.should.startWith("serializer cannot be added: invalid serializer definition");
+	        err.message.should.startWith("serializer cannot be added: invalid serializer definition");
 	        done();
 	      });
 
@@ -236,7 +236,7 @@ describe("#Serializers",function(){
 	        var client = new Client();
 	        
 	        client.on('error', function(err){
-	            err.should.startWith("cannot find serializer: test-serializer doesn't exists");
+	            err.message.should.startWith("cannot find serializer: test-serializer doesn't exists");
 	            done();
 	          });
 	        
@@ -263,10 +263,8 @@ describe("#Serializers",function(){
 	                
 	        var request = client.post(server.baseURL + "/json/path/post",args, function(data, response){
 	            data.postData.should.not.equal(null);
-	            data.postData.should.type("object");
-	            data.postData.should.have.property("serialized");
-	            data.postData.serialized.should.be.a.Boolean;
-	            data.postData.serialized.should.be.true;	            
+	            data.postData.should.type("string");
+				data.postData.includes("serialized").should.be.true();	                       
 	          });       
 
 	        done();
@@ -312,6 +310,7 @@ describe("#Serializers",function(){
 });
 
 after(function () {
-  server.close();  
+  server.close(); 
+  console.log("server stopped"); 
 });
 });

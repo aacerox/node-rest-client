@@ -8,21 +8,23 @@
     "url": "https://github.com/aacerox/node-rest-client.git"
   },
   "main": "./lib/node-rest-client",
+  "type": "module",
   "dependencies": {
-    "xml2js": ">=0.4.23",
     "debug": "~4.3.3",
-    "follow-redirects": ">=1.14.7"
+    "follow-redirects": ">=1.14.7",
+    "xml2js": ">=0.4.23"
   },
   "devDependencies": {
-    "mocha": "*",
+    "eslint": "^8.39.0",
+    "eslint-config-google": "^0.14.0",
+    "mocha": "^10.2.0",
     "should": ">= 0.0.1"
   },
-  "optionalDependencies": {},
   "engines": {
     "node": "*"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --exit"
   },
   "license": "MIT"
 }

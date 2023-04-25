@@ -1,5 +1,5 @@
-var http = require('http');
-var fs   = require('fs');
+import http from 'http';
+import fs from 'fs';
 
 var blacklist = [];
 var iplist    = [];
@@ -45,7 +45,7 @@ function deny(response, msg) {
 }
 
 http.createServer(function(request, response) {
-  var ip = request.connection.remoteAddress;
+  var ip = request.socket.remoteAddress;
   if (!ip_allowed(ip)) {
     msg = "IP " + ip + " is not allowed to use this proxy";
     deny(response, msg);

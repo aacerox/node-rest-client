@@ -1,5 +1,5 @@
-var server =require("../server/mock-server"),
-Client=require("../../lib/node-rest-client").Client;
+import server from "../server/mock-server.js"
+import Client from '../../lib/node-rest-client.js'
 
 describe('POST Method', function () {
 	
