@@ -1,4 +1,4 @@
-
+dist/*
 test/man-test.js
 
 test/spec/test.js
@@ -14,5 +14,6 @@ test/manual-test.js
 
 .project
 mocha-eclipse.js
-node-rest-client.sublime-project
-node-rest-client.sublime-workspace
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
