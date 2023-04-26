@@ -4,5 +4,8 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"jsdoc-generator.author": "aacerox",
+		"jsdoc-generator.includeDate": false
+	}
 }

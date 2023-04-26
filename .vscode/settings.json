@@ -1,3 +1,8 @@
 {
-    "eslint.enable": false
+    "eslint.enable": true,
+    "eslint.format.enable": true,
+    "cSpell.words": [
+        "aacerox"
+    ],
+    "eslint.lintTask.enable": true
 }
