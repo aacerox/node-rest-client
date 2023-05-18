@@ -2,7 +2,8 @@
     "eslint.enable": true,
     "eslint.format.enable": true,
     "cSpell.words": [
-        "aacerox"
+        "aacerox",
+        "mimetypes"
     ],
     "eslint.lintTask.enable": true
 }
