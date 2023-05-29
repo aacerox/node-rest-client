@@ -5,6 +5,7 @@ import Client from '../../lib/node-rest-client.js';
 let client;
 
 describe('GET Promise Method', function() {
+  // eslint-disable-next-line no-invalid-this
   this.timeout(150000);
 
   const assertPromiseResult = (result) => {

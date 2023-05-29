@@ -3,6 +3,7 @@ import server from '../server/mock-server.js';
 import Client from '../../lib/node-rest-client.js';
 
 describe('GET Method', function() {
+  // eslint-disable-next-line no-invalid-this
   this.timeout(150000);
 
   before(function() {
