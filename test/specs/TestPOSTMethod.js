@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import server from '../server/mock-server.js';
-import Client from '../../lib/node-rest-client.js';
+import Client from '../../lib/NodeRestClient.js';
 
 describe('POST Method', function() {
   // eslint-disable-next-line no-invalid-this
