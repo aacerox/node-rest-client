@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../nrc-common"
+		},
+		{
+			"path": "../nrc-esmodule"
 		}
 	],
 	"settings": {
