@@ -17,5 +17,3 @@ mocha-eclipse.js
 *.sublime-project
 *.sublime-workspace
 *.code-workspace
-*.code-workspace
-node-rest-client.code-workspace
