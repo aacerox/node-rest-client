@@ -18,3 +18,4 @@ mocha-eclipse.js
 *.sublime-workspace
 *.code-workspace
 *.code-workspace
+node-rest-client.code-workspace
