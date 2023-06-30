@@ -3,7 +3,7 @@
 module.exports = {    
     require: 'should',
     reporter: 'spec',
-    spec: ['test/specs/*.js'], // the positional arguments!
+    spec: ['test/specs/*.mjs'], // the positional arguments!
     ui: 'bdd',
     recursive: true
 };

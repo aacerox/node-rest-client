@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import server from '../server/mock-server.js';
-import Client from '../../lib/NodeRestClient.js';
+import server from '../server/mock-server.mjs';
+import Client from '../../dist/mjs/NodeRestClient.js';
 
 describe('IO Facade', function() {
   // eslint-disable-next-line no-invalid-this

@@ -1,5 +1,5 @@
-import server from '../server/mock-server.js';
-import Client from '../../lib/NodeRestClient.js';
+import server from '../server/mock-server.mjs';
+import Client from '../../dist/mjs/NodeRestClient.js';
 
 
 describe('Error Handlers', function() {
