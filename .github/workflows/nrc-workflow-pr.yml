@@ -1,0 +1,9 @@
+name: Node-Rest-Client PR
+on:
+  pull_request:
+    branches:
+      - master    
+jobs:
+  build-test:
+    uses: ./.github/workflows/nrc-job-build-test.yml
+    

@@ -1,0 +1,23 @@
+on:
+    workflow_call:         
+jobs:
+  build-test:
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'          
+      # clean install          
+      - run: npm ci                    
+        name: NRC Install
+      # build
+      - run: npm run build --if-present
+        name: NRC Build
+      # test
+      - run: npm test
+        name: NRC Test
+
+

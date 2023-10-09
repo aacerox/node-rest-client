@@ -1,0 +1,27 @@
+on:
+    workflow_call:         
+        outputs:
+            version:                
+                description: version calculated by git version
+                value: ${{ jobs.generate-version.outputs.semVer }}
+jobs:
+ generate-version:    
+    runs-on: ubuntu-latest    
+    outputs:
+      semVer: ${{ steps.generateVersion.outputs.semVer }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      # install git version
+      - id: installVersion
+        name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0
+        with:
+          versionSpec: '5.x'
+          preferLatestVersion: true
+      # calculate git version
+      - id:   generateVersion # id to later be referenced
+        name: calculate semver        
+        uses: gittools/actions/gitversion/execute@v0
+      
