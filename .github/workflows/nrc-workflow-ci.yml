@@ -1,0 +1,25 @@
+name: Node-Rest-Client CI
+on:
+  push:
+    branches:
+      - feat/general-upgrade      
+      - master 
+      - release
+jobs:
+  build-test:
+    uses: ./.github/workflows/nrc-job-build-test.yml
+  generate-version:
+    uses: ./.github/workflows/nrc-job-generate-version.yml
+    needs: build-test
+  print-version:
+    runs-on: ubuntu-latest
+    needs: generate-version
+    steps:
+      - run: echo "version used is $VERSION"
+        env:
+          VERSION: ${{ needs.generate-version.outputs.version }}  
+  
+
+
+ 
+        
