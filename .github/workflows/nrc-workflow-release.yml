@@ -38,7 +38,11 @@ jobs:
           export BRANCH_NAME="release/$RELEASE_TAG"
           git checkout -b $BRANCH_NAME
           git push --set-upstream origin release/$RELEASE_TAG
-            # test
+
+      - id: cleanInstallRepo
+        name: clean install repo
+        run: npm ci
+
       - id: changesetPR
         name: Create Release Pull Request
         uses: changesets/action@v1
