@@ -2,7 +2,7 @@
   "author": "Alejandro Alvarez Acero",
   "name": "node-rest-client",
   "description": "simple and lightweight node REST client",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/aacerox/node-rest-client.git"
