@@ -2,32 +2,33 @@
   "author": "Alejandro Alvarez Acero",
   "name": "node-rest-client",
   "description": "simple and lightweight node REST client",
-  "version": "4.0.0",
+  "version": "3.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/aacerox/node-rest-client.git"
   },
   "main": "dist/cjs/NodeRestClient.js",
   "module": "dist/mjs/NodeRestClient.js",
-  "types": "dist/mjs/NodeRestClient.d.ts",  
+  "types": "dist/mjs/NodeRestClient.d.ts",
   "exports": {
-      ".": {
-          "import": "./dist/mjs/NodeRestClient.js",
-          "require": "./dist/cjs/NodeRestClient.js"
-      }
-  },  
+    ".": {
+      "import": "./dist/mjs/NodeRestClient.js",
+      "require": "./dist/cjs/NodeRestClient.js"
+    }
+  },
   "dependencies": {
     "debug": "~4.3.3",
     "follow-redirects": ">=1.14.7",
     "xml2js": ">=0.4.23"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.2",
+    "@types/jest": "^29.5.1",
+    "@types/node": "^20.2.3",
     "eslint": "^8.39.0",
     "eslint-config-google": "^0.14.0",
     "mocha": "^10.2.0",
     "should": ">= 0.0.1",
-    "@types/jest": "^29.5.1",
-    "@types/node": "^20.2.3",
     "typescript": "^5.0.4"
   },
   "engines": {
@@ -35,7 +36,10 @@
   },
   "scripts": {
     "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && bash ./fixup",
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "changeset": "changeset",
+    "publish:packages": "changeset publish",
+    "version:packages": "changeset version"
   },
   "license": "MIT"
 }
