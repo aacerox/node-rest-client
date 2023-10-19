@@ -18,4 +18,3 @@ mocha-eclipse.js
 *.sublime-workspace
 *.code-workspace
 .vscode/*
-
