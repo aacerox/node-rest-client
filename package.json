@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "debug": "~4.3.3",
-    "follow-redirects": ">=1.14.7",
+    "follow-redirects": ">=1.14.8",
     "xml2js": ">=0.4.23"
   },
   "devDependencies": {
