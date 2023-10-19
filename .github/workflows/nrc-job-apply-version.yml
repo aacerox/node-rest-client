@@ -1,0 +1,57 @@
+on:
+    workflow_call:
+        inputs:
+          isRelease:
+            description: flag a release invocation 
+            type: boolean
+            default: false
+          version:
+            description: version to apply to package.json files
+            type: string
+            required: true          
+jobs:
+ apply-version:    
+    runs-on: ubuntu-latest    
+    steps:
+      - id: checkout
+        name: checkout project
+        uses: actions/checkout@v3
+
+      - id: installNode
+        name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      # generate changelog if its a release    
+      - id: generateReleaseChangelog
+        name: create release changelog
+        if: ${{ inputs.isRelease }}         
+        run: echo "generate change log"
+
+      # apply version to package.json files and create a git tag          
+      - id: applyVersion
+        name: apply version to package.json files
+        env:
+          VERSION: ${{ inputs.version }}
+          IS_RELEASE: ${{ inputs.isRelease }}
+        run: |
+          export RELEASE_COMMENT=""
+          
+          if [ "$IS_RELEASE" == "true" ]; then
+            RELEASE_COMMENT="release"
+          fi         
+
+          npm version -m "apply $RELEASE_COMMENT version $VERSION"     
+
+      # create release PR  
+      - id: createReleasePR
+        name: create release PR
+        if: ${{ inputs.isRelease }}
+        run: echo "create release PR"
+
+  
+      
+      
+      

@@ -1,0 +1,24 @@
+name: Node-Rest-Client CI
+on:
+  push:
+    branches:      
+      - master 
+      - 'release/**'
+# just one workflow active, for the same branch
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  # test
+  test:
+    uses: ./.github/workflows/nrc-job-build-test.yml
+    
+  # changeset release
+  release:
+    uses: ./.github/workflows/nrc-job-release.yml  
+
+    
+  
+
+
+ 
+        

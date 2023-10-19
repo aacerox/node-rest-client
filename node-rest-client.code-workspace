@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../nrc-common"
+		},
+		{
+			"path": "../nrc-esmodule"
+		}
+	],
+	"settings": {
+		"jsdoc-generator.author": "aacerox",
+		"jsdoc-generator.includeDate": false
+	}
+}

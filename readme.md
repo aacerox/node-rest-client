@@ -95,7 +95,7 @@ If no "Content-Type" header is set as client arg POST,PUT and PATCH methods will
 
 ### Passing args to registered methods
 
-You can pass diferents args to registered methods, simplifying reuse: path replace parameters, query parameters, custom headers 
+You can pass different args to registered methods, simplifying reuse: path replace parameters, query parameters, custom headers 
 
 ```javascript
 var Client = require('node-rest-client').Client;
@@ -227,7 +227,7 @@ var args = {
 	requestConfig: {
 		timeout: 1000, //request timeout in milliseconds
 		noDelay: true, //Enable/disable the Nagle algorithm
-		keepAlive: true, //Enable/disable keep-alive functionalityidle socket.
+		keepAlive: true, //Enable/disable keep-alive functionality idle socket.
 		keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent
 	},
 	responseConfig: {
@@ -470,7 +470,7 @@ client.parsers.find("XML").options= {"explicitArray":false, "ignoreAttrs":true};
 ```
 
 
-- _**Default Parser**_: return responses as is, without any adittional processing.
+- _**Default Parser**_: return responses as is, without any additional processing.
 
 #### Parser Management
 
@@ -652,7 +652,7 @@ Client can manage serializers through the following serializers namespace method
 
 * `getDefault()`: return the default serializer used to process requests that doesn't match with any regular serializer.
 
-* `clean()`: clean regular serializer registry. default serializer is not afected by this method.
+* `clean()`: clean regular serializer registry. default serializer is not affected by this method.
 
 
 ```javascript
@@ -781,7 +781,7 @@ var options = {
 	requestConfig: {
 		timeout: 1000, //request timeout in milliseconds
 		noDelay: true, //Enable/disable the Nagle algorithm
-		keepAlive: true, //Enable/disable keep-alive functionalityidle socket.
+		keepAlive: true, //Enable/disable keep-alive functionality idle socket.
 		keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent
 	},
 	responseConfig: {
@@ -869,5 +869,4 @@ client.on('error', function (err) {
 });
 ```
 
-**NOTE:** _Since version 0.8.0 node does not contain node-waf anymore. The node-zlib package which node-rest-client make use of, depends on node-waf.Fortunately since version 0.8.0 zlib is a core dependency of node, so since version 1.0 of node-rest-client the explicit dependency to "zlib" has been removed from package.json. therefore if you are using a version below 0.8.0 of node please use a versión below 1.0.0 of "node-rest-client". _ 
 

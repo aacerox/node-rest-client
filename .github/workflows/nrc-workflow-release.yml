@@ -1,0 +1,57 @@
+name: Node-Rest-Client Release
+on:
+  push:
+    branches:
+      - feat/general-upgrade
+  workflow_dispatch:   
+jobs:
+  create-release-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          
+
+
+ #     - id: #
+ #       name: configure git
+ #       run: |
+ #         # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+ #         git --version
+ #         git config user.name "GitHub Actions Bot"
+ #         git config user.email "<>"
+ #         git status
+ #         git tag
+ #         git describe
+
+      - id: readLatestTag
+        name: read latest tag
+        run: echo "latestTag=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+
+      - id: createReleaseBranch
+        name: create release branch
+        env:
+          RELEASE_TAG: ${{ steps.readLatestTag.outputs.latestTag }}
+        run: |        
+          export BRANCH_NAME="release/$RELEASE_TAG"
+          git checkout -b $BRANCH_NAME
+          git push --set-upstream origin release/$RELEASE_TAG
+
+      - id: cleanInstallRepo
+        name: clean install repo
+        run: npm ci
+
+      - id: changesetPR
+        name: Create Release Pull Request
+        uses: changesets/action@v1
+        env:
+          NRC_RELEASE_MSG: "node-rest-client release ${{ steps.readLatestTag.outputs.latestTag }}"        
+          GITHUB_TOKEN: ${{ secrets.NRC_GITHUB_TOKEN }}
+        with:
+          version: npm run version:packages
+          commit: "chore(release): ${{ env.NRC_RELEASE_MSG }}"
+          title: "${{ env.NRC_RELEASE_MSG }}"
+  
+    
