@@ -291,10 +291,10 @@ describe('IO Facade', function() {
   });
 
   after(function() {
-    server.close();
-    // server will respond with ECONNRESET if we do not wait her
+    // server will respond with ECONNRESET if we do not wait here
     setTimeout(() => {
+      server.close();
       console.log('server stopped');
-    }, 500 );
+    }, 1000 );
   });
 });
