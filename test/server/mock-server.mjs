@@ -161,6 +161,19 @@ const RouteManager = {
       res.write(JSON.stringify(message));
       res.end();
     },
+    '/stream': function(req, res) {
+      let requestBody = '';
+
+      req.on('data', (chunk) => requestBody +=chunk);
+
+      req.on('end', function(data) {
+        res.writeHead(200, {
+          'Content-Type': 'text/plain',
+        });
+        res.write(requestBody);
+        res.end();
+      });
+    },
 
   },
   'sleep': function(ms) {

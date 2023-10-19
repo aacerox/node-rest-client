@@ -191,15 +191,6 @@ describe('IO Facade', function() {
         serializedCallback(JSON.stringify(data));
       },
     };
-    const defaultTestSerializer = {'name': 'default-test-serializer',
-      'isDefault': true,
-      'serialize': function(data, nrcEventEmitter, serializedCallback) {
-        if (typeof data === 'object') {
-          data.defaultParsed = true;
-        }
-        serializedCallback(data);
-      },
-    };
 
 
     it('add invalid serializer to client', function(done) {
@@ -260,6 +251,7 @@ describe('IO Facade', function() {
         data.postData.includes('serialized').should.be.true();
       });
 
+      request.should.not.be.null();
       done();
     });
 
@@ -300,6 +292,9 @@ describe('IO Facade', function() {
 
   after(function() {
     server.close();
-    console.log('server stopped');
+    // server will respond with ECONNRESET if we do not wait her
+    setTimeout(() => {
+      console.log('server stopped');
+    }, 500 );
   });
 });

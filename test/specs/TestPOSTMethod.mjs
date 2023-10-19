@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import server from '../server/mock-server.mjs';
 import Client from '../../dist/mjs/NodeRestClient.js';
+import {createReadStream, readFileSync} from 'fs';
+
 
 describe('POST Method', function() {
   // eslint-disable-next-line no-invalid-this
@@ -225,6 +227,28 @@ describe('POST Method', function() {
 
         done();
       });
+    });
+  });
+
+  describe('#STREAM', function() {
+    it('POST request with file read stream', function(done) {
+      const client = new Client();
+
+      // create read stream from file
+      const testFilePath = './test/resources/stream-file.txt';
+      const sourceData = readFileSync(testFilePath);
+      const sourceStream = createReadStream(testFilePath);
+
+
+      client.post(
+          server.baseURL + '/stream',
+          {data: sourceStream},
+          function(data, response) {
+            response.statusCode.should.be.equal(200);
+            data.toString().should.equal(sourceData.toString());
+            done();
+          },
+      );
     });
   });
 
