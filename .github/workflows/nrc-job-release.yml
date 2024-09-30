@@ -1,0 +1,47 @@
+on:
+    workflow_call:             
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'aacerox/node-rest-client' }}
+    steps:
+      # checkout repo
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      # read latest tag    
+      - id: readLatestTag
+        name: read latest tag
+        run: echo "latestTag=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+      # setup node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+      # install repo dependencies    
+      - id: cleanInstallRepo
+        name: clean install repo
+        run: npm ci
+      # run changeset action
+      # - when push from normal PR: the 'version' command is executed. A new release branch and PR 
+      #   is created if it doesn't exists and if it does exists the commit is added to release branch
+      #
+      # - when push from release PR: the 'publish' command is executed and artifact are published to npm
+      - id: changesetPR
+        name: Changeset release
+        uses: changesets/action@v1
+        env:
+          NRC_RELEASE_MSG: "node-rest-client release ${{ steps.readLatestTag.outputs.latestTag }}"        
+          GITHUB_TOKEN: ${{ secrets.NRC_GITHUB_TOKEN }}
+        with:
+          version: npm run version:packages
+          publish: npm run publish:packages
+          commit: "chore(release): ${{ env.NRC_RELEASE_MSG }}"
+          title: "${{ env.NRC_RELEASE_MSG }}"  
+
+          
+
+
+
